@@ -1,285 +1,1822 @@
-<!doctype html><html lang="es"><head><link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#b5121b"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Control de multas"><title>Control de multas</title>
-<style>*{box-sizing:border-box}body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,Arial;color:#111}header{background:#b5121b;color:#fff;padding:15px 16px;position:sticky;top:0;z-index:2;box-shadow:0 2px 8px #0002}.brand{display:flex;align-items:center;gap:10px}.brand img{width:42px;height:42px;border-radius:10px;object-fit:cover}.brand h1{margin:0;font-size:23px}.sub{font-size:13px;opacity:.85;margin-left:52px}main{padding:12px;max-width:650px;margin:auto}.card{background:#fff;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #0001}h2{font-size:18px;margin:0 0 12px}.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mode button,button{border:0;border-radius:13px;padding:14px;font-size:16px;font-weight:700}.mode button{background:#e9edf2;color:#b5121b}.mode .active{background:#b5121b;color:#fff}label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}select,input{width:100%;padding:13px;border:1px solid #d1d6dc;border-radius:12px;background:#fff;font-size:16px}.primary{width:100%;background:#19733f;color:#fff;margin-top:13px}.secondary{width:100%;background:#e9edf2;color:#b5121b;margin-top:8px}.danger{width:100%;background:#b5121b;color:#fff;margin-top:8px}.amount{text-align:center;font-size:28px;font-weight:800;padding:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.total{font-size:22px;font-weight:800}.player,.mut,.catalog-item{padding:10px 0;border-bottom:1px solid #eee}.player{display:flex;justify-content:space-between;font-weight:600}.catalog-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.catalog-actions{display:flex;gap:6px}.mini{padding:8px 10px;font-size:13px}.edit{background:#e9edf2;color:#b5121b}.del{background:#fee2e2;color:#991b1b}small{color:#68717a}.hidden{display:none}.admin-note{font-size:12px;color:#68717a;margin-top:8px}.admin-form{background:#f8fafc;padding:12px;border-radius:14px;margin-top:10px}</style></head><body>
-<header><div class="brand"><img src="icon-180.png" alt="Escudo Llefià"><h1>Control de multas</h1></div></header><main>
-<div class="card"><h2>➕ Nueva multa</h2><div class="mode"><button id="be" class="active" onclick="setTipo('Entrenamiento')">🏋️ Entrenamiento</button><button id="bp" onclick="setTipo('Partido')">⚽ Partido</button></div>
-<label>Capitán que pone la multa</label><input id="capitan" type="text" placeholder="Escribe tu nombre" autocomplete="name"><label>Jugador</label><select id="jugador"><option value="">Selecciona jugador</option></select><label>Multa</label><select id="multa"></select>
-<div class="row"><div><label>Cantidad</label><input id="cantidad" type="number" min="1" value="1"></div><div><label>Extra (€)</label><input id="extra" type="number" min="0" step=".01" value="0"></div></div>
-<div class="amount" id="importe">0,00 €</div><button class="primary" onclick="add()">REGISTRAR MULTA</button></div>
-<div class="card"><h2>📊 Resumen</h2><div class="total" id="total">0,00 €</div><div id="resumen"></div></div>
-<div class="card"><h2>🧾 Últimas multas</h2><div id="lista"></div><button class="secondary" onclick="exportar()">Exportar registro</button><button class="danger" onclick="borrarTodo()">Borrar todos los datos</button></div>
-<div class="card"><h2>⚙️ Administrar multas</h2><div id="adminLogin"><label>PIN de administrador</label><input id="adminPin" type="password" inputmode="numeric" placeholder="Introduce el PIN"><button class="secondary" onclick="entrarAdmin()">ENTRAR</button><div class="admin-note">Este PIN solo protege el acceso desde la aplicación.</div></div><div id="adminPanel" class="hidden"><div class="admin-form"><h3 style="margin:0 0 8px">➕ Añadir multa</h3><label>Tipo</label><select id="nuevoTipo"><option>Entrenamiento</option><option>Partido</option></select><label>Nombre</label><input id="nuevoNombre" placeholder="Ej. Llegar tarde al entrenamiento"><label>Precio (€)</label><input id="nuevoPrecio" type="number" min="0" step=".01" placeholder="10"><button class="primary" onclick="crearMulta()">AÑADIR MULTA</button></div><div id="catalogo" style="margin-top:10px"></div><button class="secondary" onclick="salirAdmin()">Cerrar administración</button></div></div>
-</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+<!doctype html>
+<html lang="es">
+<head>
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#b5121b">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Control de multas">
+<title>Control de multas</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,Arial;color:#111}
+header{background:#b5121b;color:#fff;padding:15px 16px;position:sticky;top:0;z-index:2;box-shadow:0 2px 8px #0002}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:42px;height:42px;border-radius:10px;object-fit:cover}
+.brand h1{margin:0;font-size:23px}
+.sub{font-size:13px;opacity:.85;margin-left:52px}
+main{padding:12px;max-width:650px;margin:auto}
+.card{background:#fff;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
+h2{font-size:18px;margin:0 0 12px}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode button,button{border:0;border-radius:13px;padding:14px;font-size:16px;font-weight:700}
+.mode button{background:#e9edf2;color:#b5121b}
+.mode .active{background:#b5121b;color:#fff}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}
+select,input{width:100%;padding:13px;border:1px solid #d1d6dc;border-radius:12px;background:#fff;font-size:16px}
+.primary{width:100%;background:#19733f;color:#fff;margin-top:13px}
+.secondary{width:100%;background:#e9edf2;color:#b5121b;margin-top:8px}
+.danger{width:100%;background:#b5121b;color:#fff;margin-top:8px}
+.amount{text-align:center;font-size:28px;font-weight:800;padding:12px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.total{font-size:22px;font-weight:800}
+.player,.mut,.catalog-item{padding:10px 0;border-bottom:1px solid #eee}
+.player{display:flex;justify-content:space-between;align-items:center;font-weight:600;gap:8px}
+.player-left{display:flex;align-items:center;gap:8px}
+.player-status{font-size:11px;font-weight:700;padding:4px 7px;border-radius:999px;background:#fee2e2;color:#991b1b}
+.catalog-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.catalog-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.mini{padding:8px 10px;font-size:13px}
+.edit{background:#e9edf2;color:#b5121b}
+.del{background:#fee2e2;color:#991b1b}
+.restore{background:#dcfce7;color:#166534}
+small{color:#68717a}
+.hidden{display:none}
+.admin-note{font-size:12px;color:#68717a;margin-top:8px}
+.admin-form{background:#f8fafc;padding:12px;border-radius:14px;margin-top:10px}
+.admin-section{margin-top:18px}
+.admin-section h3{margin:0 0 8px}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="brand">
+<img src="icon-180.png" alt="Escudo Llefià">
+<h1>Control de multas</h1>
+</div>
+</header>
+
+<main>
+
+<div class="card">
+<h2>➕ Nueva multa</h2>
+
+<div class="mode">
+<button id="be" class="active" onclick="setTipo('Entrenamiento')">🏋️ Entrenamiento</button>
+<button id="bp" onclick="setTipo('Partido')">⚽ Partido</button>
+</div>
+
+<label>Capitán que pone la multa</label>
+<input id="capitan" type="text" placeholder="Escribe tu nombre" autocomplete="name">
+
+<label>Jugador</label>
+<select id="jugador">
+<option value="">Selecciona jugador</option>
+</select>
+
+<label>Multa</label>
+<select id="multa"></select>
+
+<div class="row">
+<div>
+<label>Cantidad</label>
+<input id="cantidad" type="number" min="1" value="1">
+</div>
+
+<div>
+<label>Extra (€)</label>
+<input id="extra" type="number" min="0" step=".01" value="0">
+</div>
+</div>
+
+<div class="amount" id="importe">0,00 €</div>
+
+<button class="primary" onclick="add()">REGISTRAR MULTA</button>
+</div>
+
+
+<div class="card">
+<h2>📊 Resumen</h2>
+<div class="total" id="total">0,00 €</div>
+<div id="resumen"></div>
+</div>
+
+
+<div class="card">
+<h2>🧾 Últimas multas</h2>
+
+<div id="lista"></div>
+
+<button class="secondary" onclick="exportar()">Exportar registro</button>
+
+<button class="danger" onclick="borrarTodo()">Borrar todos los datos</button>
+</div>
+
+
+<div class="card">
+
+<h2>⚙️ Administración</h2>
+
+<div id="adminLogin">
+
+<label>PIN de administrador</label>
+
+<input
+id="adminPin"
+type="password"
+inputmode="numeric"
+placeholder="Introduce el PIN"
+>
+
+<button class="secondary" onclick="entrarAdmin()">ENTRAR</button>
+
+<div class="admin-note">
+Este PIN solo protege el acceso desde la aplicación.
+</div>
+
+</div>
+
+
+<div id="adminPanel" class="hidden">
+
+<!-- ADMINISTRAR JUGADORES -->
+
+<div class="admin-section">
+
+<h3>👥 Administrar jugadores</h3>
+
+<div class="admin-form">
+
+<label>Nombre del jugador</label>
+
+<input
+id="nuevoJugador"
+placeholder="Ej. Juan Pérez"
+>
+
+<button class="primary" onclick="crearJugador()">
+AÑADIR JUGADOR
+</button>
+
+</div>
+
+<div class="admin-note">
+Dar de baja no borra sus multas anteriores.
+Si vuelve al equipo, puedes reactivarlo.
+</div>
+
+<div id="listaJugadoresAdmin" style="margin-top:10px"></div>
+
+</div>
+
+
+<!-- ADMINISTRAR MULTAS -->
+
+<div class="admin-section">
+
+<h3>💶 Administrar multas</h3>
+
+<div class="admin-form">
+
+<label>Tipo</label>
+
+<select id="nuevoTipo">
+<option>Entrenamiento</option>
+<option>Partido</option>
+</select>
+
+<label>Nombre</label>
+
+<input
+id="nuevoNombre"
+placeholder="Ej. Llegar tarde al entrenamiento"
+>
+
+<label>Precio (€)</label>
+
+<input
+id="nuevoPrecio"
+type="number"
+min="0"
+step=".01"
+placeholder="10"
+>
+
+<button class="primary" onclick="crearMulta()">
+AÑADIR MULTA
+</button>
+
+</div>
+
+<div id="catalogo" style="margin-top:10px"></div>
+
+</div>
+
+
+<button class="secondary" onclick="salirAdmin()">
+Cerrar administración
+</button>
+
+</div>
+
+</div>
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
 const SUPABASE_URL="https://uksafrrheudcfukkswao.supabase.co";
+
 const SUPABASE_PUBLISHABLE_KEY="sb_publishable_0fZGFfK4X34lQbC-sNqtDQ_cSXzDM1E";
+
 const ADMIN_PIN="2103";
-const jugadores=["Jairo","Adel","Marco Vilar","Julia","Dani Lucea","Porta","Iker Beltran","Massy","Aiman","Opoku","Monty","Dani Bernabeu","Lucas Moradillo","Roger Porta","Tejada","Roc Piferrer","Eric","Iker","Gerard Torras","Rony","Hugo Tadeo"];
-let tipo="Entrenamiento",datos=[],catalogo=[];
-let capitanGuardado=localStorage.getItem("capitanMultas")||"";
+
+
+let tipo="Entrenamiento";
+
+let datos=[];
+
+let catalogo=[];
+
+let jugadores=[];
+
+
+let capitanGuardado=
+localStorage.getItem("capitanMultas")||"";
+
+
 const $=id=>document.getElementById(id);
-if($('capitan'))$('capitan').value=capitanGuardado;
-const supabaseClient=window.supabase?.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+
+
+if($('capitan'))
+$('capitan').value=capitanGuardado;
+
+
+const supabaseClient=
+window.supabase?.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+
 
 function escapeHTML(value){
-  return String(value??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-}
-function money(value){return Number(value||0).toFixed(2).replace('.',',')+' €';}
-function validarNumero(value,min){
-  const n=Number(value);
-  return Number.isFinite(n)&&n>=min?n:null;
-}
-function comprobarConexion(){
-  if(!supabaseClient){
-    alert('No se ha podido iniciar la conexión con la base de datos. Comprueba tu conexión a Internet y vuelve a cargar la página.');
-    return false;
-  }
-  return true;
+
+return String(value??'').replace(
+/[&<>'"]/g,
+c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+"'":'&#39;',
+'"':'&quot;'
+}[c])
+);
+
 }
 
-jugadores.forEach(j=>$('jugador').add(new Option(j,j)));
+
+
+function money(value){
+
+return Number(value||0)
+.toFixed(2)
+.replace('.',',')+' €';
+
+}
+
+
+
+function validarNumero(value,min){
+
+const n=Number(value);
+
+return Number.isFinite(n)&&n>=min?n:null;
+
+}
+
+
+
+function comprobarConexion(){
+
+if(!supabaseClient){
+
+alert(
+'No se ha podido iniciar la conexión con la base de datos. Comprueba tu conexión a Internet y vuelve a cargar la página.'
+);
+
+return false;
+
+}
+
+return true;
+
+}
+
+
+
+/* =========================
+   JUGADORES
+========================= */
+
+
+function actualizarSelectorJugadores(){
+
+const s=$('jugador');
+
+const valorActual=s.value;
+
+s.innerHTML='';
+
+s.add(
+new Option(
+'Selecciona jugador',
+''
+)
+);
+
+
+jugadores
+.filter(j=>j.activo!==false)
+.sort(
+(a,b)=>
+(Number(a.orden)||999)-
+(Number(b.orden)||999)||
+String(a.nombre).localeCompare(
+String(b.nombre),
+'es'
+)
+)
+.forEach(j=>{
+
+s.add(
+new Option(
+j.nombre,
+j.nombre
+)
+);
+
+});
+
+
+if(
+jugadores.some(
+j=>
+j.nombre===valorActual&&
+j.activo!==false
+)
+){
+
+s.value=valorActual;
+
+}
+
+}
+
+
+
+async function cargarJugadores(){
+
+if(!comprobarConexion())return;
+
+
+const {data,error}=
+await supabaseClient
+.from('jugadores')
+.select('*')
+.order('orden')
+.order('id');
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se ha podido cargar la lista de jugadores. Revisa la configuración de Supabase.'
+);
+
+return;
+
+}
+
+
+jugadores=data||[];
+
+
+actualizarSelectorJugadores();
+
+
+if(!$('adminPanel').classList.contains('hidden'))
+renderJugadoresAdmin();
+
+
+render();
+
+}
+
+
+
+function renderJugadoresAdmin(){
+
+const activos=
+jugadores
+.filter(j=>j.activo!==false)
+.sort(
+(a,b)=>
+(Number(a.orden)||999)-
+(Number(b.orden)||999)||
+a.nombre.localeCompare(b.nombre,'es')
+);
+
+
+const bajas=
+jugadores
+.filter(j=>j.activo===false)
+.sort(
+(a,b)=>
+(Number(a.orden)||999)-
+(Number(b.orden)||999)||
+a.nombre.localeCompare(b.nombre,'es')
+);
+
+
+let html=
+'<h4 style="margin:12px 0 6px">Jugadores activos</h4>';
+
+
+html+=activos.length
+
+?activos.map(j=>
+
+'<div class="catalog-item">'+
+
+'<div><b>'+
+escapeHTML(j.nombre)+
+'</b></div>'+
+
+'<div class="catalog-actions">'+
+
+'<button class="mini del" onclick="darDeBajaJugador('+Number(j.id)+')">'+
+'Dar de baja'+
+'</button>'+
+
+'</div>'+
+
+'</div>'
+
+).join('')
+
+:'<small>No hay jugadores activos.</small>';
+
+
+html+=
+'<h4 style="margin:16px 0 6px">Jugadores dados de baja</h4>';
+
+
+html+=bajas.length
+
+?bajas.map(j=>
+
+'<div class="catalog-item">'+
+
+'<div><b>'+
+escapeHTML(j.nombre)+
+'</b><br><small>'+
+'No aparece en nuevas multas; su historial se conserva.'+
+'</small></div>'+
+
+'<div class="catalog-actions">'+
+
+'<button class="mini restore" onclick="reactivarJugador('+Number(j.id)+')">'+
+'Reactivar'+
+'</button>'+
+
+'</div>'+
+
+'</div>'
+
+).join('')
+
+:'<small>No hay jugadores dados de baja.</small>';
+
+
+$('listaJugadoresAdmin').innerHTML=html;
+
+}
+
+
+
+async function crearJugador(){
+
+if(!comprobarConexion())return;
+
+
+const nombre=
+($('nuevoJugador').value||'').trim();
+
+
+if(!nombre)
+return alert(
+'Escribe el nombre del jugador.'
+);
+
+
+const existe=
+jugadores.find(
+j=>
+j.nombre.trim().toLowerCase()===
+nombre.toLowerCase()
+);
+
+
+if(existe){
+
+if(existe.activo===false){
+
+if(
+confirm(
+'Ese jugador está dado de baja. ¿Quieres reactivarlo?'
+)
+){
+
+await reactivarJugador(existe.id);
+
+}
+
+}else{
+
+alert(
+'Ese jugador ya existe.'
+);
+
+}
+
+return;
+
+}
+
+
+const orden=
+Math.max(
+0,
+...jugadores.map(
+x=>Number(x.orden)||0
+)
+)+1;
+
+
+const {data,error}=
+await supabaseClient
+.from('jugadores')
+.insert({
+nombre,
+activo:true,
+orden
+})
+.select()
+.single();
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se pudo añadir el jugador: '+
+error.message
+);
+
+return;
+
+}
+
+
+jugadores.push(data);
+
+
+$('nuevoJugador').value='';
+
+
+actualizarSelectorJugadores();
+
+renderJugadoresAdmin();
+
+render();
+
+}
+
+
+
+async function darDeBajaJugador(id){
+
+if(!comprobarConexion())return;
+
+
+const j=
+jugadores.find(
+x=>Number(x.id)===Number(id)
+);
+
+
+if(!j)return;
+
+
+if(
+!confirm(
+'¿Dar de baja a "'+
+j.nombre+
+'"? No aparecerá en nuevas multas, pero sus multas anteriores se conservarán.'
+)
+)return;
+
+
+const {data,error}=
+await supabaseClient
+.from('jugadores')
+.update({
+activo:false
+})
+.eq('id',id)
+.select()
+.single();
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se pudo dar de baja: '+
+error.message
+);
+
+return;
+
+}
+
+
+Object.assign(j,data);
+
+
+actualizarSelectorJugadores();
+
+renderJugadoresAdmin();
+
+render();
+
+}
+
+
+
+async function reactivarJugador(id){
+
+if(!comprobarConexion())return;
+
+
+const j=
+jugadores.find(
+x=>Number(x.id)===Number(id)
+);
+
+
+if(!j)return;
+
+
+const {data,error}=
+await supabaseClient
+.from('jugadores')
+.update({
+activo:true
+})
+.eq('id',id)
+.select()
+.single();
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se pudo reactivar: '+
+error.message
+);
+
+return;
+
+}
+
+
+Object.assign(j,data);
+
+
+actualizarSelectorJugadores();
+
+renderJugadoresAdmin();
+
+render();
+
+}
+
+
+
+/* =========================
+   MULTAS
+========================= */
+
 
 function setTipo(t){
-  tipo=t;
-  $('be').classList.toggle('active',t==='Entrenamiento');
-  $('bp').classList.toggle('active',t==='Partido');
-  cargar();
+
+tipo=t;
+
+$('be').classList.toggle(
+'active',
+t==='Entrenamiento'
+);
+
+$('bp').classList.toggle(
+'active',
+t==='Partido'
+);
+
+cargar();
+
 }
+
+
 
 async function cargar(){
-  if(!catalogo.length) await cargarCatalogo();
-  const s=$('multa');
-  s.innerHTML='';
-  catalogo
-    .filter(m=>m.tipo===tipo&&m.activo!==false)
-    .sort((a,b)=>(a.orden??999)-(b.orden??999))
-    .forEach(m=>s.add(new Option(m.nombre+' — '+money(m.precio),m.id)));
-  actualizar();
+
+if(!catalogo.length)
+await cargarCatalogo();
+
+
+const s=$('multa');
+
+s.innerHTML='';
+
+
+catalogo
+
+.filter(
+m=>
+m.tipo===tipo&&
+m.activo!==false
+)
+
+.sort(
+(a,b)=>
+(a.orden??999)-
+(b.orden??999)
+)
+
+.forEach(m=>
+
+s.add(
+new Option(
+m.nombre+
+' — '+
+money(m.precio),
+m.id
+)
+)
+
+);
+
+
+actualizar();
+
 }
+
+
 
 function actualizar(){
-  const m=catalogo.find(x=>String(x.id)===$('multa').value);
-  const q=validarNumero($('cantidad').value,1)??1;
-  const e=validarNumero($('extra').value,0)??0;
-  $('importe').textContent=money(Number(m?.precio||0)*q+e);
+
+const m=
+catalogo.find(
+x=>
+String(x.id)===$('multa').value
+);
+
+
+const q=
+validarNumero(
+$('cantidad').value,
+1
+)??1;
+
+
+const e=
+validarNumero(
+$('extra').value,
+0
+)??0;
+
+
+$('importe').textContent=
+money(
+Number(m?.precio||0)*q+e
+);
+
 }
+
+
 
 async function cargarCatalogo(){
-  if(!comprobarConexion())return;
-  const {data,error}=await supabaseClient.from('multas_catalogo').select('*').order('tipo').order('orden').order('id');
-  if(error){
-    console.error(error);
-    alert('No se ha podido cargar el catálogo de multas. Revisa la configuración de Supabase.');
-    return;
-  }
-  catalogo=data||[];
+
+if(!comprobarConexion())return;
+
+
+const {data,error}=
+await supabaseClient
+.from('multas_catalogo')
+.select('*')
+.order('tipo')
+.order('orden')
+.order('id');
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se ha podido cargar el catálogo de multas. Revisa la configuración de Supabase.'
+);
+
+return;
+
 }
+
+
+catalogo=data||[];
+
+}
+
+
 
 async function cargarDatos(){
-  if(!supabaseClient){datos=[];render();return;}
 
-  // Supabase puede limitar una consulta grande. Cargamos por bloques para que
-  // el resumen y la exportación no se queden incompletos al crecer la base de datos.
-  const pageSize=1000;
-  const todos=[];
-  for(let from=0;;from+=pageSize){
-    const {data,error}=await supabaseClient
-      .from('multas')
-      .select('*')
-      .order('created_at',{ascending:false})
-      .range(from,from+pageSize-1);
-    if(error){
-      console.error(error);
-      alert('No se han podido cargar las multas. Revisa la configuración de Supabase.');
-      return;
-    }
-    todos.push(...(data||[]));
-    if(!data||data.length<pageSize)break;
-  }
-  datos=todos;
-  render();
+if(!supabaseClient){
+
+datos=[];
+
+render();
+
+return;
+
 }
+
+
+const pageSize=1000;
+
+const todos=[];
+
+
+for(
+let from=0;;
+from+=pageSize
+){
+
+const {data,error}=
+await supabaseClient
+.from('multas')
+.select('*')
+.order(
+'created_at',
+{
+ascending:false
+}
+)
+.range(
+from,
+from+pageSize-1
+);
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se han podido cargar las multas. Revisa la configuración de Supabase.'
+);
+
+return;
+
+}
+
+
+todos.push(
+...(data||[])
+);
+
+
+if(
+!data||
+data.length<pageSize
+)
+break;
+
+}
+
+
+datos=todos;
+
+render();
+
+}
+
+
 
 async function add(){
-  if(!comprobarConexion())return;
-  const capitan=($('capitan').value||'').trim();
-  if(!capitan)return alert('Escribe tu nombre de capitán');
-  localStorage.setItem('capitanMultas',capitan);
-  if(!$('jugador').value)return alert('Selecciona jugador');
 
-  const m=catalogo.find(x=>String(x.id)===$('multa').value);
-  const q=validarNumero($('cantidad').value,1);
-  const e=validarNumero($('extra').value,0);
-  if(!m)return alert('Selecciona una multa');
-  if(q===null)return alert('La cantidad debe ser un número igual o mayor que 1.');
-  if(e===null)return alert('El extra debe ser un número igual o mayor que 0.');
+if(!comprobarConexion())
+return;
 
-  const registro={
-    jugador:$('jugador').value,
-    tipo:tipo,
-    multa:m.nombre,
-    importe:Number(m.precio)*q+e,
-    fecha:new Date().toLocaleDateString('es-ES'),
-    capitan
-  };
 
-  const {error}=await supabaseClient.from('multas').insert(registro);
-  if(error){
-    console.error(error);
-    alert('No se ha podido guardar la multa: '+error.message);
-    return;
-  }
-  $('jugador').value='';
-  $('extra').value=0;
-  $('cantidad').value=1;
-  actualizar();
-  await cargarDatos();
+const capitan=
+($('capitan').value||'').trim();
+
+
+if(!capitan)
+return alert(
+'Escribe tu nombre de capitán'
+);
+
+
+localStorage.setItem(
+'capitanMultas',
+capitan
+);
+
+
+if(!$('jugador').value)
+return alert(
+'Selecciona jugador'
+);
+
+
+const m=
+catalogo.find(
+x=>
+String(x.id)===$('multa').value
+);
+
+
+const q=
+validarNumero(
+$('cantidad').value,
+1
+);
+
+
+const e=
+validarNumero(
+$('extra').value,
+0
+);
+
+
+if(!m)
+return alert(
+'Selecciona una multa'
+);
+
+
+if(q===null)
+return alert(
+'La cantidad debe ser un número igual o mayor que 1.'
+);
+
+
+if(e===null)
+return alert(
+'El extra debe ser un número igual o mayor que 0.'
+);
+
+
+const registro={
+
+jugador:$('jugador').value,
+
+tipo:tipo,
+
+multa:m.nombre,
+
+importe:
+Number(m.precio)*q+e,
+
+fecha:
+new Date().toLocaleDateString(
+'es-ES'
+),
+
+capitan
+
+};
+
+
+const {error}=
+await supabaseClient
+.from('multas')
+.insert(registro);
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se ha podido guardar la multa: '+
+error.message
+);
+
+return;
+
 }
+
+
+$('jugador').value='';
+
+$('extra').value=0;
+
+$('cantidad').value=1;
+
+actualizar();
+
+await cargarDatos();
+
+}
+
+
 
 function render(){
-  const total=datos.reduce((a,x)=>a+Number(x.importe||0),0);
-  const r={};
-  jugadores.forEach(j=>r[j]=0);
-  datos.forEach(x=>{if(r[x.jugador]!==undefined)r[x.jugador]+=Number(x.importe||0);});
 
-  $('total').textContent=money(total);
-  $('resumen').innerHTML=jugadores.map(j=>
-    '<div class="player"><span>'+escapeHTML(j)+'</span><span>'+money(r[j])+'</span></div>'
-  ).join('');
+const total=
+datos.reduce(
+(a,x)=>
+a+Number(x.importe||0),
+0
+);
 
-  $('lista').innerHTML=datos.length
-    ?datos.slice(0,25).map(x=>
-      '<div class="mut"><b>'+escapeHTML(x.jugador)+'</b> — '+money(x.importe)+
-      '<br><small>'+escapeHTML(x.fecha)+' · '+escapeHTML(x.tipo)+' · '+escapeHTML(x.multa)+
-      (x.capitan?' · 👤 Puesta por: '+escapeHTML(x.capitan):'')+
-      '</small></div>'
-    ).join('')
-    :'<small>Aún no hay multas.</small>';
+
+const r={};
+
+
+const nombres=
+new Set(
+jugadores.map(
+j=>j.nombre
+)
+);
+
+
+datos.forEach(x=>{
+
+if(x.jugador)
+nombres.add(x.jugador);
+
+});
+
+
+const listaJugadores=
+Array.from(nombres)
+.sort(
+(a,b)=>{
+
+const ja=
+jugadores.find(
+j=>j.nombre===a
+);
+
+const jb=
+jugadores.find(
+j=>j.nombre===b
+);
+
+
+const oa=
+ja?
+Number(ja.orden)||9999:
+9999;
+
+
+const ob=
+jb?
+Number(jb.orden)||9999:
+9999;
+
+
+return oa-ob||
+a.localeCompare(
+b,
+'es'
+);
+
 }
+);
+
+
+listaJugadores.forEach(
+j=>r[j]=0
+);
+
+
+datos.forEach(x=>{
+
+if(
+r[x.jugador]!==undefined
+)
+r[x.jugador]+=
+Number(x.importe||0);
+
+});
+
+
+$('total').textContent=
+money(total);
+
+
+$('resumen').innerHTML=
+listaJugadores.map(j=>{
+
+const jugador=
+jugadores.find(
+x=>x.nombre===j
+);
+
+
+const baja=
+jugador&&
+jugador.activo===false;
+
+
+return
+
+'<div class="player">'+
+
+'<div class="player-left">'+
+
+'<span>'+
+escapeHTML(j)+
+'</span>'+
+
+(
+baja
+?
+'<span class="player-status">BAJA</span>'
+:''
+)+
+
+'</div>'+
+
+'<span>'+
+money(r[j])+
+'</span>'+
+
+'</div>';
+
+}).join('');
+
+
+$('lista').innerHTML=
+
+datos.length
+
+?
+
+datos
+.slice(0,25)
+.map(x=>
+
+'<div class="mut">'+
+
+'<b>'+
+escapeHTML(x.jugador)+
+'</b> — '+
+money(x.importe)+
+
+'<br><small>'+
+
+escapeHTML(x.fecha)+
+' · '+
+escapeHTML(x.tipo)+
+' · '+
+escapeHTML(x.multa)+
+
+(
+x.capitan
+?
+' · 👤 Puesta por: '+
+escapeHTML(x.capitan)
+:''
+)+
+
+'</small></div>'
+
+).join('')
+
+:
+
+'<small>Aún no hay multas.</small>';
+
+}
+
+
 
 function csvCell(value){
-  const text=String(value??'');
-  return '"'+text.replace(/"/g,'""')+'"';
+
+const text=
+String(value??'');
+
+return '"'+
+text.replace(/"/g,'""')+
+'"';
+
 }
+
+
+
 function exportar(){
-  const filas=[['Fecha','Capitán','Jugador','Tipo','Multa','Importe (€)']];
-  datos.forEach(x=>filas.push([x.fecha,x.capitan||'',x.jugador||'',x.tipo||'',x.multa||'',Number(x.importe||0).toFixed(2)]));
-  const csv='\uFEFF'+filas.map(f=>f.map(csvCell).join(';')).join('\r\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
-  a.download='multas_26-27.csv';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+
+const filas=[
+[
+'Fecha',
+'Capitán',
+'Jugador',
+'Tipo',
+'Multa',
+'Importe (€)'
+]
+];
+
+
+datos.forEach(x=>
+
+filas.push([
+x.fecha,
+x.capitan||'',
+x.jugador||'',
+x.tipo||'',
+x.multa||'',
+Number(x.importe||0)
+.toFixed(2)
+])
+
+);
+
+
+const csv=
+'\uFEFF'+
+filas
+.map(
+f=>
+f.map(csvCell).join(';')
+)
+.join('\r\n');
+
+
+const a=
+document.createElement('a');
+
+
+a.href=
+URL.createObjectURL(
+new Blob(
+[csv],
+{
+type:
+'text/csv;charset=utf-8'
 }
+)
+);
+
+
+a.download=
+'multas_26-27.csv';
+
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+
+setTimeout(
+()=>
+URL.revokeObjectURL(
+a.href
+),
+1000
+);
+
+}
+
+
+
+/* =========================
+   BORRAR DATOS
+========================= */
+
 
 async function borrarTodo(){
-  if(!comprobarConexion())return;
-  const pin=prompt('Por seguridad, introduce el PIN de administrador para borrar todas las multas:');
-  if(pin===null)return;
-  if(pin!==ADMIN_PIN)return alert('PIN incorrecto.');
-  if(!confirm('⚠️ Esta acción borrará TODAS las multas registradas. ¿Continuar?'))return;
 
-  const {error}=await supabaseClient.from('multas').delete().neq('id',0);
-  if(error){
-    console.error(error);
-    alert('No se han podido borrar las multas: '+error.message);
-    return;
-  }
-  await cargarDatos();
+if(!comprobarConexion())
+return;
+
+
+const pin=
+prompt(
+'Por seguridad, introduce el PIN de administrador para borrar todas las multas:'
+);
+
+
+if(pin===null)
+return;
+
+
+if(pin!==ADMIN_PIN)
+return alert(
+'PIN incorrecto.'
+);
+
+
+if(
+!confirm(
+'⚠️ Esta acción borrará TODAS las multas registradas. ¿Continuar?'
+)
+)
+return;
+
+
+const {error}=
+await supabaseClient
+.from('multas')
+.delete()
+.neq(
+'id',
+0
+);
+
+
+if(error){
+
+console.error(error);
+
+alert(
+'No se han podido borrar las multas: '+
+error.message
+);
+
+return;
+
 }
+
+
+await cargarDatos();
+
+}
+
+
+
+/* =========================
+   ADMINISTRACIÓN
+========================= */
+
 
 function entrarAdmin(){
-  if($('adminPin').value===ADMIN_PIN){
-    $('adminLogin').classList.add('hidden');
-    $('adminPanel').classList.remove('hidden');
-    renderCatalogo();
-  }else alert('PIN incorrecto.');
+
+if(
+$('adminPin').value===
+ADMIN_PIN
+){
+
+$('adminLogin')
+.classList.add('hidden');
+
+$('adminPanel')
+.classList.remove('hidden');
+
+renderJugadoresAdmin();
+
+renderCatalogo();
+
+}else{
+
+alert(
+'PIN incorrecto.'
+);
+
 }
+
+}
+
+
+
 function salirAdmin(){
-  $('adminPanel').classList.add('hidden');
-  $('adminLogin').classList.remove('hidden');
-  $('adminPin').value='';
+
+$('adminPanel')
+.classList.add('hidden');
+
+$('adminLogin')
+.classList.remove('hidden');
+
+$('adminPin').value='';
+
 }
+
+
+
+/* =========================
+   CATÁLOGO DE MULTAS
+========================= */
+
 
 function renderCatalogo(){
-  $('catalogo').innerHTML='<h3 style="margin:14px 0 8px">📋 Multas configuradas</h3>'+[
-    'Entrenamiento','Partido'
-  ].map(t=>
-    '<div><b>'+escapeHTML(t)+'</b>'+catalogo
-      .filter(m=>m.tipo===t&&m.activo!==false)
-      .map(m=>
-        '<div class="catalog-item"><div>'+escapeHTML(m.nombre)+
-        '<br><small>'+money(m.precio)+'</small></div><div class="catalog-actions">'+
-        '<button class="mini edit" onclick="editarMulta('+Number(m.id)+')">Editar</button>'+
-        '<button class="mini del" onclick="eliminarMulta('+Number(m.id)+')">Eliminar</button></div></div>'
-      ).join('')+'</div>'
-  ).join('');
+
+$('catalogo').innerHTML=
+
+'<h4 style="margin:12px 0 8px">'+
+'Multas configuradas'+
+'</h4>'+
+
+[
+'Entrenamiento',
+'Partido'
+]
+
+.map(t=>
+
+'<div><b>'+
+escapeHTML(t)+
+'</b>'+
+
+catalogo
+
+.filter(
+m=>
+m.tipo===t&&
+m.activo!==false
+)
+
+.map(m=>
+
+'<div class="catalog-item">'+
+
+'<div>'+
+escapeHTML(m.nombre)+
+'<br><small>'+
+money(m.precio)+
+'</small></div>'+
+
+'<div class="catalog-actions">'+
+
+'<button class="mini edit" onclick="editarMulta('+Number(m.id)+')">'+
+'Editar'+
+'</button>'+
+
+'<button class="mini del" onclick="eliminarMulta('+Number(m.id)+')">'+
+'Eliminar'+
+'</button>'+
+
+'</div>'+
+
+'</div>'
+
+).join('')+
+
+'</div>'
+
+).join('');
+
 }
+
+
 
 async function crearMulta(){
-  if(!comprobarConexion())return;
-  const nombre=$('nuevoNombre').value.trim();
-  const precio=validarNumero($('nuevoPrecio').value,0);
-  if(!nombre||precio===null)return alert('Completa nombre y precio.');
 
-  const tipoNuevo=$('nuevoTipo').value;
-  const orden=Math.max(0,...catalogo.filter(x=>x.tipo===tipoNuevo).map(x=>Number(x.orden)||0))+1;
-  const {data,error}=await supabaseClient.from('multas_catalogo').insert({
-    tipo:tipoNuevo,nombre,precio,activo:true,orden
-  }).select().single();
-  if(error){alert('No se pudo añadir: '+error.message);return;}
-  catalogo.push(data);
-  $('nuevoNombre').value='';
-  $('nuevoPrecio').value='';
-  renderCatalogo();
-  await cargar();
+if(!comprobarConexion())
+return;
+
+
+const nombre=
+$('nuevoNombre').value.trim();
+
+
+const precio=
+validarNumero(
+$('nuevoPrecio').value,
+0
+);
+
+
+if(
+!nombre||
+precio===null
+)
+return alert(
+'Completa nombre y precio.'
+);
+
+
+const tipoNuevo=
+$('nuevoTipo').value;
+
+
+const orden=
+Math.max(
+0,
+...catalogo
+.filter(
+x=>x.tipo===tipoNuevo
+)
+.map(
+x=>Number(x.orden)||0
+)
+)+1;
+
+
+const {data,error}=
+await supabaseClient
+.from('multas_catalogo')
+.insert({
+
+tipo:tipoNuevo,
+
+nombre,
+
+precio,
+
+activo:true,
+
+orden
+
+})
+.select()
+.single();
+
+
+if(error){
+
+alert(
+'No se pudo añadir: '+
+error.message
+);
+
+return;
+
 }
+
+
+catalogo.push(data);
+
+
+$('nuevoNombre').value='';
+
+$('nuevoPrecio').value='';
+
+
+renderCatalogo();
+
+await cargar();
+
+}
+
+
 
 async function editarMulta(id){
-  if(!comprobarConexion())return;
-  const m=catalogo.find(x=>x.id===id);
-  if(!m)return;
-  let nombre=prompt('Nombre de la multa:',m.nombre);
-  if(nombre===null)return;
-  let precioTxt=prompt('Precio (€):',m.precio);
-  if(precioTxt===null)return;
-  const precio=validarNumero(precioTxt,0);
-  if(!nombre.trim()||precio===null)return alert('Datos no válidos.');
 
-  const {data,error}=await supabaseClient.from('multas_catalogo').update({
-    nombre:nombre.trim(),precio
-  }).eq('id',id).select().single();
-  if(error){alert('No se pudo modificar: '+error.message);return;}
-  Object.assign(m,data);
-  renderCatalogo();
-  await cargar();
+if(!comprobarConexion())
+return;
+
+
+const m=
+catalogo.find(
+x=>x.id===id
+);
+
+
+if(!m)return;
+
+
+let nombre=
+prompt(
+'Nombre de la multa:',
+m.nombre
+);
+
+
+if(nombre===null)
+return;
+
+
+let precioTxt=
+prompt(
+'Precio (€):',
+m.precio
+);
+
+
+if(precioTxt===null)
+return;
+
+
+const precio=
+validarNumero(
+precioTxt,
+0
+);
+
+
+if(
+!nombre.trim()||
+precio===null
+)
+return alert(
+'Datos no válidos.'
+);
+
+
+const {data,error}=
+await supabaseClient
+.from('multas_catalogo')
+.update({
+
+nombre:nombre.trim(),
+
+precio
+
+})
+.eq('id',id)
+.select()
+.single();
+
+
+if(error){
+
+alert(
+'No se pudo modificar: '+
+error.message
+);
+
+return;
+
 }
+
+
+Object.assign(m,data);
+
+
+renderCatalogo();
+
+await cargar();
+
+}
+
+
 
 async function eliminarMulta(id){
-  if(!comprobarConexion())return;
-  const m=catalogo.find(x=>x.id===id);
-  if(!m||!confirm('¿Eliminar "'+m.nombre+'" del catálogo? Las multas ya registradas no se borrarán.'))return;
-  const {error}=await supabaseClient.from('multas_catalogo').update({activo:false}).eq('id',id);
-  if(error){alert('No se pudo eliminar: '+error.message);return;}
-  m.activo=false;
-  renderCatalogo();
-  await cargar();
+
+if(!comprobarConexion())
+return;
+
+
+const m=
+catalogo.find(
+x=>x.id===id
+);
+
+
+if(
+!m||
+!confirm(
+'¿Eliminar "'+
+m.nombre+
+'" del catálogo? Las multas ya registradas no se borrarán.'
+)
+)
+return;
+
+
+const {error}=
+await supabaseClient
+.from('multas_catalogo')
+.update({
+activo:false
+})
+.eq('id',id);
+
+
+if(error){
+
+alert(
+'No se pudo eliminar: '+
+error.message
+);
+
+return;
+
 }
+
+
+m.activo=false;
+
+
+renderCatalogo();
+
+await cargar();
+
+}
+
+
+
+/* =========================
+   EVENTOS E INICIO
+========================= */
+
 
 $('multa').onchange=actualizar;
+
 $('cantidad').oninput=actualizar;
+
 $('extra').oninput=actualizar;
+
+
+cargarJugadores();
+
 cargar();
+
 cargarDatos();
 
+
 if(supabaseClient){
-  supabaseClient.channel('multas-cambios')
-    .on('postgres_changes',{event:'*',schema:'public',table:'multas'},()=>cargarDatos())
-    .on('postgres_changes',{event:'*',schema:'public',table:'multas_catalogo'},async()=>{
-      await cargarCatalogo();
-      cargar();
-      if(!$('adminPanel').classList.contains('hidden'))renderCatalogo();
-    })
-    .subscribe();
+
+supabaseClient
+.channel('multas-cambios')
+
+.on(
+'postgres_changes',
+{
+event:'*',
+schema:'public',
+table:'multas'
+},
+()=>
+cargarDatos()
+)
+
+.on(
+'postgres_changes',
+{
+event:'*',
+schema:'public',
+table:'multas_catalogo'
+},
+async()=>{
+
+await cargarCatalogo();
+
+cargar();
+
+if(
+!$('adminPanel')
+.classList.contains('hidden')
+)
+renderCatalogo();
+
 }
-</script></body></html>
+)
+
+.on(
+'postgres_changes',
+{
+event:'*',
+schema:'public',
+table:'jugadores'
+},
+async()=>{
+
+await cargarJugadores();
+
+}
+)
+
+.subscribe();
+
+}
+
+</script>
+
+</body>
+</html>

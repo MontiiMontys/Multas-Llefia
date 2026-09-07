@@ -12,43 +12,227 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,Arial;color:#111}
-header{background:#b5121b;color:#fff;padding:15px 16px;position:sticky;top:0;z-index:2;box-shadow:0 2px 8px #0002}
-.brand{display:flex;align-items:center;gap:10px}
-.brand img{width:42px;height:42px;border-radius:10px;object-fit:cover}
-.brand h1{margin:0;font-size:23px}
-.sub{font-size:13px;opacity:.85;margin-left:52px}
-main{padding:12px;max-width:650px;margin:auto}
-.card{background:#fff;border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #0001}
-h2{font-size:18px;margin:0 0 12px}
-.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.mode button,button{border:0;border-radius:13px;padding:14px;font-size:16px;font-weight:700}
-.mode button{background:#e9edf2;color:#b5121b}
-.mode .active{background:#b5121b;color:#fff}
-label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}
-select,input{width:100%;padding:13px;border:1px solid #d1d6dc;border-radius:12px;background:#fff;font-size:16px}
-.primary{width:100%;background:#19733f;color:#fff;margin-top:13px}
-.secondary{width:100%;background:#e9edf2;color:#b5121b;margin-top:8px}
-.danger{width:100%;background:#b5121b;color:#fff;margin-top:8px}
-.amount{text-align:center;font-size:28px;font-weight:800;padding:12px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.total{font-size:22px;font-weight:800}
-.player,.mut,.catalog-item{padding:10px 0;border-bottom:1px solid #eee}
-.player{display:flex;justify-content:space-between;align-items:center;font-weight:600;gap:8px}
-.player-left{display:flex;align-items:center;gap:8px}
-.player-status{font-size:11px;font-weight:700;padding:4px 7px;border-radius:999px;background:#fee2e2;color:#991b1b}
-.catalog-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
-.catalog-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.mini{padding:8px 10px;font-size:13px}
-.edit{background:#e9edf2;color:#b5121b}
-.del{background:#fee2e2;color:#991b1b}
-.restore{background:#dcfce7;color:#166534}
-small{color:#68717a}
-.hidden{display:none}
-.admin-note{font-size:12px;color:#68717a;margin-top:8px}
-.admin-form{background:#f8fafc;padding:12px;border-radius:14px;margin-top:10px}
-.admin-section{margin-top:18px}
-.admin-section h3{margin:0 0 8px}
+
+body{
+margin:0;
+background:#f3f4f6;
+font-family:-apple-system,BlinkMacSystemFont,Arial;
+color:#111
+}
+
+header{
+background:#b5121b;
+color:#fff;
+padding:15px 16px;
+position:sticky;
+top:0;
+z-index:2;
+box-shadow:0 2px 8px #0002
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.brand img{
+width:42px;
+height:42px;
+border-radius:10px;
+object-fit:cover
+}
+
+.brand h1{
+margin:0;
+font-size:23px
+}
+
+.sub{
+font-size:13px;
+opacity:.85;
+margin-left:52px
+}
+
+main{
+padding:12px;
+max-width:650px;
+margin:auto
+}
+
+.card{
+background:#fff;
+border-radius:18px;
+padding:15px;
+margin-bottom:12px;
+box-shadow:0 2px 10px #0001
+}
+
+h2{
+font-size:18px;
+margin:0 0 12px
+}
+
+.mode{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.mode button,button{
+border:0;
+border-radius:13px;
+padding:14px;
+font-size:16px;
+font-weight:700
+}
+
+.mode button{
+background:#e9edf2;
+color:#b5121b
+}
+
+.mode .active{
+background:#b5121b;
+color:#fff
+}
+
+label{
+display:block;
+font-size:13px;
+font-weight:700;
+margin:10px 0 5px
+}
+
+select,input{
+width:100%;
+padding:13px;
+border:1px solid #d1d6dc;
+border-radius:12px;
+background:#fff;
+font-size:16px
+}
+
+.primary{
+width:100%;
+background:#19733f;
+color:#fff;
+margin-top:13px
+}
+
+.secondary{
+width:100%;
+background:#e9edf2;
+color:#b5121b;
+margin-top:8px
+}
+
+.danger{
+width:100%;
+background:#b5121b;
+color:#fff;
+margin-top:8px
+}
+
+.amount{
+text-align:center;
+font-size:28px;
+font-weight:800;
+padding:12px
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px
+}
+
+.total{
+font-size:22px;
+font-weight:800
+}
+
+.player,.mut,.catalog-item{
+padding:10px 0;
+border-bottom:1px solid #eee
+}
+
+.player{
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-weight:600;
+gap:8px
+}
+
+.player-left{
+display:flex;
+align-items:center;
+gap:8px
+}
+
+.catalog-item{
+display:grid;
+grid-template-columns:1fr auto;
+gap:8px;
+align-items:center
+}
+
+.catalog-actions{
+display:flex;
+gap:6px;
+flex-wrap:wrap;
+justify-content:flex-end
+}
+
+.mini{
+padding:8px 10px;
+font-size:13px
+}
+
+.edit{
+background:#e9edf2;
+color:#b5121b
+}
+
+.del{
+background:#fee2e2;
+color:#991b1b
+}
+
+.restore{
+background:#dcfce7;
+color:#166534
+}
+
+small{
+color:#68717a
+}
+
+.hidden{
+display:none
+}
+
+.admin-note{
+font-size:12px;
+color:#68717a;
+margin-top:8px
+}
+
+.admin-form{
+background:#f8fafc;
+padding:12px;
+border-radius:14px;
+margin-top:10px
+}
+
+.admin-section{
+margin-top:18px
+}
+
+.admin-section h3{
+margin:0 0 8px
+}
 </style>
 </head>
 
@@ -64,126 +248,306 @@ small{color:#68717a}
 <main>
 
 <div class="card">
+
 <h2>➕ Nueva multa</h2>
 
 <div class="mode">
-<button id="be" class="active" onclick="setTipo('Entrenamiento')">🏋️ Entrenamiento</button>
-<button id="bp" onclick="setTipo('Partido')">⚽ Partido</button>
+
+<button
+id="be"
+class="active"
+onclick="setTipo('Entrenamiento')"
+>
+🏋️ Entrenamiento
+</button>
+
+<button
+id="bp"
+onclick="setTipo('Partido')"
+>
+⚽ Partido
+</button>
+
 </div>
 
 <label>Capitán que pone la multa</label>
-<input id="capitan" type="text" placeholder="Escribe tu nombre" autocomplete="name">
+
+<input
+id="capitan"
+type="text"
+placeholder="Escribe tu nombre"
+autocomplete="name"
+>
 
 <label>Jugador</label>
+
 <select id="jugador">
-<option value="">Selecciona jugador</option>
+
+<option value="">
+Selecciona jugador
+</option>
+
 </select>
 
 <label>Multa</label>
+
 <select id="multa"></select>
 
 <div class="row">
+
 <div>
+
 <label>Cantidad</label>
-<input id="cantidad" type="number" min="1" value="1">
+
+<input
+id="cantidad"
+type="number"
+min="1"
+value="1"
+>
+
 </div>
 
 <div>
+
 <label>Extra (€)</label>
-<input id="extra" type="number" min="0" step=".01" value="0">
-</div>
+
+<input
+id="extra"
+type="number"
+min="0"
+step=".01"
+value="0"
+>
+
 </div>
 
-<div class="amount" id="importe">0,00 €</div>
-
-<button class="primary" onclick="add()">REGISTRAR MULTA</button>
 </div>
+
+<div
+class="amount"
+id="importe"
+>
+0,00 €
+</div>
+
+<button
+class="primary"
+onclick="add()"
+>
+REGISTRAR MULTA
+</button>
+
+</div>
+
 
 <div class="card">
+
 <h2>📊 Resumen</h2>
-<div class="total" id="total">0,00 €</div>
+
+<div
+class="total"
+id="total"
+>
+0,00 €
+</div>
+
 <div id="resumen"></div>
+
 </div>
 
+
 <div class="card">
+
 <h2>🧾 Últimas multas</h2>
+
 <div id="lista"></div>
-<button class="secondary" onclick="exportar()">Exportar registro</button>
-<button class="danger" onclick="borrarTodo()">Borrar todos los datos</button>
+
+<button
+class="secondary"
+onclick="exportar()"
+>
+Exportar registro
+</button>
+
+<button
+class="danger"
+onclick="borrarTodo()"
+>
+Borrar todos los datos
+</button>
+
 </div>
 
+
 <div class="card">
+
 <h2>⚙️ Administración</h2>
 
 <div id="adminLogin">
+
 <label>PIN de administrador</label>
-<input id="adminPin" type="password" inputmode="numeric" placeholder="Introduce el PIN">
-<button class="secondary" onclick="entrarAdmin()">ENTRAR</button>
-<div class="admin-note">Este PIN solo protege el acceso desde la aplicación.</div>
+
+<input
+id="adminPin"
+type="password"
+inputmode="numeric"
+placeholder="Introduce el PIN"
+>
+
+<button
+class="secondary"
+onclick="entrarAdmin()"
+>
+ENTRAR
+</button>
+
+<div class="admin-note">
+Este PIN solo protege el acceso desde la aplicación.
 </div>
 
-<div id="adminPanel" class="hidden">
+</div>
+
+
+<div
+id="adminPanel"
+class="hidden"
+>
 
 <div class="admin-section">
+
 <h3>👥 Administrar jugadores</h3>
 
 <div class="admin-form">
+
 <label>Nombre del jugador</label>
-<input id="nuevoJugador" placeholder="Ej. Juan Pérez">
-<button class="primary" onclick="crearJugador()">AÑADIR JUGADOR</button>
+
+<input
+id="nuevoJugador"
+placeholder="Ej. Juan Pérez"
+>
+
+<button
+class="primary"
+onclick="crearJugador()"
+>
+AÑADIR JUGADOR
+</button>
+
 </div>
 
 <div class="admin-note">
-Dar de baja no borra sus multas anteriores.
+
+Dar de baja elimina al jugador de la aplicación y hace que sus multas dejen de contar.
+
 Si vuelve al equipo, puedes reactivarlo.
+
 </div>
 
-<div id="listaJugadoresAdmin" style="margin-top:10px"></div>
+<div
+id="listaJugadoresAdmin"
+style="margin-top:10px"
+></div>
+
 </div>
+
 
 <div class="admin-section">
+
 <h3>💶 Administrar multas</h3>
 
 <div class="admin-form">
+
 <label>Tipo</label>
+
 <select id="nuevoTipo">
-<option>Entrenamiento</option>
-<option>Partido</option>
+
+<option>
+Entrenamiento
+</option>
+
+<option>
+Partido
+</option>
+
 </select>
 
 <label>Nombre</label>
-<input id="nuevoNombre" placeholder="Ej. Llegar tarde al entrenamiento">
+
+<input
+id="nuevoNombre"
+placeholder="Ej. Llegar tarde al entrenamiento"
+>
 
 <label>Precio (€)</label>
-<input id="nuevoPrecio" type="number" min="0" step=".01" placeholder="10">
 
-<button class="primary" onclick="crearMulta()">AÑADIR MULTA</button>
+<input
+id="nuevoPrecio"
+type="number"
+min="0"
+step=".01"
+placeholder="10"
+>
+
+<button
+class="primary"
+onclick="crearMulta()"
+>
+AÑADIR MULTA
+</button>
+
 </div>
 
-<div id="catalogo" style="margin-top:10px"></div>
+<div
+id="catalogo"
+style="margin-top:10px"
+></div>
+
 </div>
 
-<button class="secondary" onclick="salirAdmin()">Cerrar administración</button>
+
+<button
+class="secondary"
+onclick="salirAdmin()"
+>
+Cerrar administración
+</button>
+
 </div>
+
 </div>
+
 </div>
 
 </main>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-const SUPABASE_URL="https://uksafrrheudcfukkswao.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY="sb_publishable_0fZGFfK4X34lQbC-sNqtDQ_cSXzDM1E";
-const ADMIN_PIN="2103";
+const SUPABASE_URL=
+"https://uksafrrheudcfukkswao.supabase.co";
 
-let tipo="Entrenamiento";
+const SUPABASE_PUBLISHABLE_KEY=
+"sb_publishable_0fZGFfK4X34lQbC-sNqtDQ_cSXzDM1E";
+
+const ADMIN_PIN=
+"2103";
+
+
+let tipo=
+"Entrenamiento";
+
 let datos=[];
+
 let catalogo=[];
+
 let jugadores=[];
 
+
 const JUGADORES_BASE=[
+
 "Jairo",
 "Adel",
 "Marco Vilar",
@@ -205,61 +569,94 @@ const JUGADORES_BASE=[
 "Gerard Torras",
 "Rony",
 "Hugo Tadeo"
+
 ];
 
-let jugadoresDesdeSupabase=false;
+
+let jugadoresDesdeSupabase=
+false;
+
 
 let capitanGuardado=
 localStorage.getItem("capitanMultas")||"";
 
-const $=id=>document.getElementById(id);
+
+const $=
+id=>document.getElementById(id);
+
 
 if($('capitan'))
-$('capitan').value=capitanGuardado;
+
+$('capitan').value=
+capitanGuardado;
+
 
 const supabaseClient=
 window.supabase?.createClient(
+
 SUPABASE_URL,
+
 SUPABASE_PUBLISHABLE_KEY
+
 );
+
 
 function escapeHTML(value){
 
 return String(value??'').replace(
+
 /[&<>'"]/g,
+
 c=>({
+
 '&':'&amp;',
 '<':'&lt;',
 '>':'&gt;',
 "'":'&#39;',
 '"':'&quot;'
+
 }[c])
+
 );
 
 }
 
+
 function money(value){
 
 return Number(value||0)
+
 .toFixed(2)
-.replace('.',',')+' €';
+
+.replace('.',',')
+
++' €';
 
 }
+
 
 function validarNumero(value,min){
 
-const n=Number(value);
+const n=
+Number(value);
 
-return Number.isFinite(n)&&n>=min?n:null;
+return Number.isFinite(n)&&n>=min
+?
+n
+:
+null;
 
 }
+
 
 function comprobarConexion(){
 
 if(!supabaseClient){
 
 alert(
+
 'No se ha podido iniciar la conexión con la base de datos. Comprueba tu conexión a Internet y vuelve a cargar la página.'
+
 );
 
 return false;
@@ -270,83 +667,133 @@ return true;
 
 }
 
+
 /* =========================
    JUGADORES
 ========================= */
 
+
 function crearListaBaseJugadores(){
 
-return JUGADORES_BASE.map((nombre,index)=>({
+return JUGADORES_BASE.map(
+
+(nombre,index)=>({
 
 id:null,
+
 nombre,
+
 activo:true,
+
 orden:index+1,
+
 esFallback:true
 
-}));
+})
+
+);
 
 }
 
+
 function actualizarSelectorJugadores(){
 
-const s=$('jugador');
+const s=
+$('jugador');
 
-const valorActual=s.value;
+const valorActual=
+s.value;
+
 
 s.innerHTML='';
 
+
 s.add(
+
 new Option(
+
 'Selecciona jugador',
+
 ''
+
 )
+
 );
 
+
 jugadores
-.filter(j=>j.activo!==false)
+
+.filter(
+j=>
+j.activo!==false
+)
+
 .slice()
+
 .sort(
+
 (a,b)=>
+
 (Number(a.orden)||999)-
+
 (Number(b.orden)||999)||
-String(a.nombre).localeCompare(
+
+String(a.nombre)
+.localeCompare(
 String(b.nombre),
 'es'
 )
+
 )
+
 .forEach(j=>{
 
 s.add(
+
 new Option(
+
 j.nombre,
+
 j.nombre
+
 )
+
 );
 
 });
 
+
 if(
+
 jugadores.some(
+
 j=>
+
 j.nombre===valorActual&&
+
 j.activo!==false
+
 )
+
 ){
 
-s.value=valorActual;
+s.value=
+valorActual;
 
 }
 
 }
+
 
 async function cargarJugadores(){
 
 if(!supabaseClient){
 
-jugadores=crearListaBaseJugadores();
+jugadores=
+crearListaBaseJugadores();
 
-jugadoresDesdeSupabase=false;
+jugadoresDesdeSupabase=
+false;
 
 actualizarSelectorJugadores();
 
@@ -358,30 +805,46 @@ return;
 
 }
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('jugadores')
+
 .select('*')
+
 .order('orden')
+
 .order('id');
+
 
 if(error){
 
 console.error(
+
 'Error cargando jugadores:',
+
 error
+
 );
 
-jugadores=crearListaBaseJugadores();
+jugadores=
+crearListaBaseJugadores();
 
-jugadoresDesdeSupabase=false;
+jugadoresDesdeSupabase=
+false;
 
 actualizarSelectorJugadores();
 
 if(
+
 !$('adminPanel')
-.classList.contains('hidden')
+.classList
+.contains('hidden')
+
 )
+
 renderJugadoresAdmin();
 
 render();
@@ -390,75 +853,126 @@ return;
 
 }
 
-jugadores=data||[];
 
-jugadoresDesdeSupabase=true;
+jugadores=
+data||[];
+
+jugadoresDesdeSupabase=
+true;
 
 actualizarSelectorJugadores();
 
+
 if(
+
 !$('adminPanel')
-.classList.contains('hidden')
+.classList
+.contains('hidden')
+
 )
+
 renderJugadoresAdmin();
+
 
 render();
 
 }
 
+
 function renderJugadoresAdmin(){
 
 const activos=
+
 jugadores
-.filter(j=>j.activo!==false)
+
+.filter(
+j=>
+j.activo!==false
+)
+
 .slice()
+
 .sort(
+
 (a,b)=>
+
 (Number(a.orden)||999)-
+
 (Number(b.orden)||999)||
-String(a.nombre).localeCompare(
+
+String(a.nombre)
+.localeCompare(
 String(b.nombre),
 'es'
 )
+
 );
+
 
 const bajas=
+
 jugadores
-.filter(j=>j.activo===false)
+
+.filter(
+j=>
+j.activo===false
+)
+
 .slice()
+
 .sort(
+
 (a,b)=>
+
 (Number(a.orden)||999)-
+
 (Number(b.orden)||999)||
-String(a.nombre).localeCompare(
+
+String(a.nombre)
+.localeCompare(
 String(b.nombre),
 'es'
 )
+
 );
 
+
 let html=
+
 '<h4 style="margin:12px 0 6px">Jugadores activos</h4>';
 
-html+=activos.length
+
+html+=
+activos.length
 
 ?
+
 activos.map(j=>
 
 '<div class="catalog-item">'+
 
 '<div><b>'+
+
 escapeHTML(j.nombre)+
+
 '</b></div>'+
 
 '<div class="catalog-actions">'+
 
 (
+
 j.id!==null&&
+
 j.id!==undefined
+
 ?
+
 '<button class="mini del" onclick="darDeBajaJugador('+Number(j.id)+')">Dar de baja</button>'
+
 :
+
 '<small>Conexión pendiente</small>'
+
 )+
 
 '</div>'+
@@ -471,31 +985,48 @@ j.id!==undefined
 
 '<small>No hay jugadores activos.</small>';
 
+
 html+=
+
 '<h4 style="margin:16px 0 6px">Jugadores dados de baja</h4>';
 
-html+=bajas.length
+
+html+=
+
+bajas.length
 
 ?
+
 bajas.map(j=>
 
 '<div class="catalog-item">'+
 
 '<div><b>'+
+
 escapeHTML(j.nombre)+
+
 '</b><br><small>'+
-'No aparece en nuevas multas; su historial se conserva.'+
+
+'Jugador oculto de la aplicación. Sus multas no cuentan mientras esté de baja.'+
+
 '</small></div>'+
 
 '<div class="catalog-actions">'+
 
 (
+
 j.id!==null&&
+
 j.id!==undefined
+
 ?
+
 '<button class="mini restore" onclick="reactivarJugador('+Number(j.id)+')">Reactivar</button>'
+
 :
+
 ''
+
 )+
 
 '</div>'+
@@ -508,46 +1039,63 @@ j.id!==undefined
 
 '<small>No hay jugadores dados de baja.</small>';
 
-$('listaJugadoresAdmin').innerHTML=html;
+
+$('listaJugadoresAdmin').innerHTML=
+html;
 
 }
+
 
 async function crearJugador(){
 
 if(!comprobarConexion())
 return;
 
+
 const nombre=
 ($('nuevoJugador').value||'').trim();
 
+
 if(!nombre)
+
 return alert(
 'Escribe el nombre del jugador.'
 );
 
+
 const existe=
+
 jugadores.find(
+
 j=>
+
 String(j.nombre)
 .trim()
 .toLowerCase()===
+
 nombre.toLowerCase()
+
 );
+
 
 if(existe){
 
 if(existe.activo===false){
 
 if(
+
 confirm(
 'Ese jugador está dado de baja. ¿Quieres reactivarlo?'
 )
+
 ){
 
 if(existe.id===null){
 
 alert(
+
 'Ese jugador está usando la lista de seguridad. Recarga la página cuando Supabase vuelva a estar disponible.'
+
 );
 
 return;
@@ -572,17 +1120,29 @@ return;
 
 }
 
+
 const orden=
+
 Math.max(
+
 0,
+
 ...jugadores.map(
-x=>Number(x.orden)||0
+
+x=>
+Number(x.orden)||0
+
 )
+
 )+1;
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('jugadores')
+
 .insert({
 
 nombre,
@@ -592,21 +1152,27 @@ activo:true,
 orden
 
 })
+
 .select()
+
 .single();
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se pudo añadir el jugador: '+
 error.message
+
 );
 
 return;
 
 }
+
 
 jugadores.push(data);
 
@@ -620,51 +1186,76 @@ render();
 
 }
 
+
 async function darDeBajaJugador(id){
 
 if(!comprobarConexion())
 return;
 
+
 const j=
+
 jugadores.find(
+
 x=>
 Number(x.id)===Number(id)
+
 );
+
 
 if(!j)
 return;
 
+
 if(
+
 !confirm(
+
 '¿Dar de baja a "'+
 j.nombre+
-'"? No aparecerá en nuevas multas, pero sus multas anteriores se conservarán.'
+'"? Desaparecerá de la aplicación y sus multas dejarán de contar. Podrás reactivarlo después.'
+
 )
+
 )
+
 return;
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('jugadores')
+
 .update({
+
 activo:false
+
 })
+
 .eq('id',id)
+
 .select()
+
 .single();
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se pudo dar de baja: '+
 error.message
+
 );
 
 return;
 
 }
+
 
 Object.assign(j,data);
 
@@ -675,43 +1266,62 @@ renderJugadoresAdmin();
 render();
 
 }
+
 
 async function reactivarJugador(id){
 
 if(!comprobarConexion())
 return;
 
+
 const j=
+
 jugadores.find(
+
 x=>
 Number(x.id)===Number(id)
+
 );
+
 
 if(!j)
 return;
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('jugadores')
+
 .update({
+
 activo:true
+
 })
+
 .eq('id',id)
+
 .select()
+
 .single();
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se pudo reactivar: '+
 error.message
+
 );
 
 return;
 
 }
+
 
 Object.assign(j,data);
 
@@ -723,121 +1333,186 @@ render();
 
 }
 
+
 /* =========================
    MULTAS
 ========================= */
+
 
 function setTipo(t){
 
 tipo=t;
 
 $('be').classList.toggle(
+
 'active',
+
 t==='Entrenamiento'
+
 );
 
 $('bp').classList.toggle(
+
 'active',
+
 t==='Partido'
+
 );
 
 cargar();
 
 }
 
+
 async function cargar(){
 
 if(!catalogo.length)
+
 await cargarCatalogo();
 
-const s=$('multa');
+
+const s=
+$('multa');
 
 s.innerHTML='';
 
+
 catalogo
+
 .filter(
+
 m=>
+
 m.tipo===tipo&&
+
 m.activo!==false
+
 )
+
 .slice()
+
 .sort(
+
 (a,b)=>
+
 (Number(a.orden)||999)-
+
 (Number(b.orden)||999)
+
 )
+
 .forEach(m=>
 
 s.add(
+
 new Option(
+
 m.nombre+
 ' — '+
 money(m.precio),
+
 m.id
+
 )
+
 )
 
 );
+
 
 actualizar();
 
 }
 
+
 function actualizar(){
 
 const m=
+
 catalogo.find(
+
 x=>
-String(x.id)===$('multa').value
+
+String(x.id)===
+$('multa').value
+
 );
 
+
 const q=
+
 validarNumero(
+
 $('cantidad').value,
+
 1
+
 )??1;
 
+
 const e=
+
 validarNumero(
+
 $('extra').value,
+
 0
+
 )??0;
 
+
 $('importe').textContent=
+
 money(
+
 Number(m?.precio||0)*q+e
+
 );
 
 }
+
 
 async function cargarCatalogo(){
 
 if(!comprobarConexion())
 return;
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('multas_catalogo')
+
 .select('*')
+
 .order('tipo')
+
 .order('orden')
+
 .order('id');
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se ha podido cargar el catálogo de multas. Revisa la configuración de Supabase.'
+
 );
 
 return;
 
 }
 
-catalogo=data||[];
+
+catalogo=
+data||[];
 
 }
+
 
 async function cargarDatos(){
 
@@ -851,124 +1526,191 @@ return;
 
 }
 
-const pageSize=1000;
+
+const pageSize=
+1000;
 
 const todos=[];
 
+
 for(
+
 let from=0;;
+
 from+=pageSize
+
 ){
 
 const {data,error}=
+
 await supabaseClient
+
 .from('multas')
+
 .select('*')
+
 .order(
+
 'created_at',
+
 {
+
 ascending:false
+
 }
+
 )
+
 .range(
+
 from,
+
 from+pageSize-1
+
 );
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se han podido cargar las multas: '+
 error.message
+
 );
 
 return;
 
 }
 
+
 todos.push(
 ...(data||[])
 );
 
+
 if(
+
 !data||
+
 data.length<pageSize
+
 )
+
 break;
 
 }
 
-datos=todos;
+
+datos=
+todos;
 
 render();
 
 }
+
 
 async function add(){
 
 if(!comprobarConexion())
 return;
 
+
 const capitan=
+
 ($('capitan').value||'').trim();
 
+
 if(!capitan)
+
 return alert(
 'Escribe tu nombre de capitán'
 );
 
+
 localStorage.setItem(
+
 'capitanMultas',
+
 capitan
+
 );
 
+
 if(!$('jugador').value)
+
 return alert(
 'Selecciona jugador'
 );
 
+
 const m=
+
 catalogo.find(
+
 x=>
-String(x.id)===$('multa').value
+
+String(x.id)===
+$('multa').value
+
 );
+
 
 const q=
+
 validarNumero(
+
 $('cantidad').value,
+
 1
+
 );
+
 
 const e=
+
 validarNumero(
+
 $('extra').value,
+
 0
+
 );
 
+
 if(!m)
+
 return alert(
 'Selecciona una multa'
 );
 
+
 if(q===null)
+
 return alert(
 'La cantidad debe ser un número igual o mayor que 1.'
 );
 
+
 if(e===null)
+
 return alert(
 'El extra debe ser un número igual o mayor que 0.'
 );
 
+
 const registro={
 
-jugador:$('jugador').value,
+jugador:
+$('jugador').value,
 
-tipo:tipo,
+tipo:
+tipo,
 
-multa:m.nombre,
+multa:
+m.nombre,
 
 importe:
 Number(m.precio)*q+e,
@@ -982,23 +1724,31 @@ capitan
 
 };
 
+
 const {error}=
+
 await supabaseClient
+
 .from('multas')
+
 .insert(registro);
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se ha podido guardar la multa: '+
 error.message
+
 );
 
 return;
 
 }
+
 
 $('jugador').value='';
 
@@ -1012,6 +1762,7 @@ await cargarDatos();
 
 }
 
+
 /* =========================
    RESUMEN
 ========================= */
@@ -1021,32 +1772,41 @@ function render(){
 /*
    MAPA DE JUGADORES
 
-   Solo los jugadores activos se muestran
-   y sus multas cuentan en el total.
+   Solo los jugadores activos forman
+   parte de la aplicación.
 */
+
+const jugadoresActivos=
+jugadores.filter(
+
+j=>
+j &&
+j.nombre &&
+j.activo!==false
+
+);
+
 
 const mapaJugadores={};
 
 const r={};
 
-jugadores.forEach(j=>{
 
-if(!j||!j.nombre)
-return;
+jugadoresActivos.forEach(j=>{
 
 mapaJugadores[j.nombre]=j;
 
-if(j.activo!==false){
-
 r[j.nombre]=0;
-
-}
 
 });
 
 
 /*
-   SUMAR SOLO LAS MULTAS DE JUGADORES ACTIVOS.
+   SUMAR MULTAS
+
+   IMPORTANTE:
+   Las multas de jugadores dados de baja
+   NO se suman.
 */
 
 datos.forEach(x=>{
@@ -1054,21 +1814,20 @@ datos.forEach(x=>{
 if(!x||!x.jugador)
 return;
 
+
 const jugador=
 mapaJugadores[x.jugador];
 
 
-/*
-   Si el jugador existe y está activo,
-   su multa cuenta.
-*/
-
 if(
+
 jugador &&
 jugador.activo!==false
+
 ){
 
 r[x.jugador]+=
+
 Number(x.importe||0);
 
 }
@@ -1077,95 +1836,93 @@ Number(x.importe||0);
 
 
 /*
-   TOTAL GENERAL:
-   SOLO multas de jugadores activos.
+   TOTAL GENERAL
 */
 
 const total=
+
 Object.values(r)
+
 .reduce(
+
 (a,v)=>
 a+Number(v||0),
+
 0
+
 );
 
-
-/*
-   Ordenar únicamente jugadores activos.
-*/
-
-const listaJugadores=
-Object.keys(r)
-.sort(
-(a,b)=>{
-
-const ja=
-mapaJugadores[a];
-
-const jb=
-mapaJugadores[b];
-
-const oa=
-ja&&ja.orden!==undefined
-?
-Number(ja.orden)
-:
-99999;
-
-const ob=
-jb&&jb.orden!==undefined
-?
-Number(jb.orden)
-:
-99999;
-
-if(oa!==ob)
-return oa-ob;
-
-return String(a).localeCompare(
-String(b),
-'es'
-);
-
-}
-);
-
-
-/*
-   Mostrar total.
-*/
 
 $('total').textContent=
 money(total);
 
 
 /*
-   Mostrar jugadores activos.
-   Los dados de baja NO aparecen.
+   ORDEN DE JUGADORES ACTIVOS
+*/
+
+const listaJugadores=
+
+jugadoresActivos
+
+.slice()
+
+.sort(
+
+(a,b)=>
+
+(Number(a.orden)||999)-
+
+(Number(b.orden)||999)||
+
+String(a.nombre)
+.localeCompare(
+String(b.nombre),
+'es'
+)
+
+);
+
+
+/*
+   LISTADO DE JUGADORES ACTIVOS
+
+   Los jugadores dados de baja
+   NO aparecen aquí.
 */
 
 $('resumen').innerHTML=
+
 listaJugadores.length
+
 ?
 
 listaJugadores
+
 .map(j=>
+
 '<div class="player">'+
 
 '<div class="player-left">'+
 
 '<span>'+
-escapeHTML(j)+
+
+escapeHTML(j.nombre)+
+
 '</span>'+
 
 '</div>'+
 
 '<span>'+
-money(r[j])+
+
+money(r[j.nombre])+
+
 '</span>'+
 
 '</div>'
+
 )
+
 .join('')
 
 :
@@ -1174,24 +1931,46 @@ money(r[j])+
 
 
 /*
-   LAS ÚLTIMAS MULTAS SE MANTIENEN.
-   Aunque un jugador esté dado de baja,
-   sus registros históricos siguen visibles aquí.
+   ÚLTIMAS MULTAS
+
+   Solo se muestran multas de jugadores
+   que están actualmente activos.
+
+   Si un jugador se da de baja,
+   sus multas desaparecen de aquí.
 */
 
+const multasVisibles=
+
+datos.filter(x=>
+
+x &&
+x.jugador &&
+mapaJugadores[x.jugador]
+
+);
+
+
 $('lista').innerHTML=
-datos.length
+
+multasVisibles.length
+
 ?
 
-datos
+multasVisibles
+
 .slice(0,25)
+
 .map(x=>
 
 '<div class="mut">'+
 
 '<b>'+
+
 escapeHTML(x.jugador)+
+
 '</b> — '+
+
 money(x.importe)+
 
 '<br><small>'+
@@ -1203,17 +1982,25 @@ escapeHTML(x.tipo)+
 escapeHTML(x.multa)+
 
 (
+
 x.capitan
+
 ?
+
 ' · 👤 Puesta por: '+
 escapeHTML(x.capitan)
+
 :
+
 ''
+
 )+
 
 '</small></div>'
 
-).join('')
+)
+
+.join('')
 
 :
 
@@ -1221,20 +2008,34 @@ escapeHTML(x.capitan)
 
 }
 
+
+/* =========================
+   CSV
+========================= */
+
+
 function csvCell(value){
 
 const text=
 String(value??'');
 
+
 return '"'+
-text.replace(/"/g,'""')+
-'"';
+
+text.replace(
+/"/g,
+'""'
+)
+
++'"';
 
 }
+
 
 function exportar(){
 
 const filas=[
+
 [
 'Fecha',
 'Capitán',
@@ -1243,46 +2044,75 @@ const filas=[
 'Multa',
 'Importe (€)'
 ]
+
 ];
+
 
 datos.forEach(x=>
 
 filas.push([
+
 x.fecha,
+
 x.capitan||'',
+
 x.jugador||'',
+
 x.tipo||'',
+
 x.multa||'',
+
 Number(x.importe||0)
 .toFixed(2)
+
 ])
+
 );
 
+
 const csv=
+
 '\uFEFF'+
+
 filas
+
 .map(
+
 f=>
 f.map(csvCell).join(';')
+
 )
+
 .join('\r\n');
+
 
 const a=
 document.createElement('a');
 
+
 a.href=
+
 URL.createObjectURL(
+
 new Blob(
+
 [csv],
+
 {
+
 type:
 'text/csv;charset=utf-8'
+
 }
+
 )
+
 );
+
 
 a.download=
 'multas_26-27.csv';
+
 
 document.body.appendChild(a);
 
@@ -1290,80 +2120,113 @@ a.click();
 
 a.remove();
 
+
 setTimeout(
+
 ()=>
+
 URL.revokeObjectURL(
 a.href
 ),
+
 1000
+
 );
 
 }
 
+
 /* =========================
    BORRAR DATOS
 ========================= */
+
 
 async function borrarTodo(){
 
 if(!comprobarConexion())
 return;
 
+
 const pin=
+
 prompt(
+
 'Por seguridad, introduce el PIN de administrador para borrar todas las multas:'
+
 );
+
 
 if(pin===null)
 return;
 
+
 if(pin!==ADMIN_PIN)
+
 return alert(
 'PIN incorrecto.'
 );
 
+
 if(
+
 !confirm(
+
 '⚠️ Esta acción borrará TODAS las multas registradas. ¿Continuar?'
+
 )
+
 )
+
 return;
 
+
 const {error}=
+
 await supabaseClient
+
 .from('multas')
+
 .delete()
+
 .neq(
 'id',
 0
 );
+
 
 if(error){
 
 console.error(error);
 
 alert(
+
 'No se han podido borrar las multas: '+
 error.message
+
 );
 
 return;
 
 }
 
+
 await cargarDatos();
 
 }
+
 
 /* =========================
    ADMINISTRACIÓN
 ========================= */
 
+
 function entrarAdmin(){
 
 if(
+
 $('adminPin').value===
 ADMIN_PIN
+
 ){
 
 $('adminLogin')
@@ -1386,6 +2249,7 @@ alert(
 
 }
 
+
 function salirAdmin(){
 
 $('adminPanel')
@@ -1398,35 +2262,46 @@ $('adminPin').value='';
 
 }
 
+
 /* =========================
    CATÁLOGO DE MULTAS
 ========================= */
+
 
 function renderCatalogo(){
 
 $('catalogo').innerHTML=
 
 '<h4 style="margin:12px 0 8px">'+
+
 'Multas configuradas'+
+
 '</h4>'+
 
 [
+
 'Entrenamiento',
 'Partido'
+
 ]
 
 .map(t=>
 
 '<div><b>'+
+
 escapeHTML(t)+
+
 '</b>'+
 
 catalogo
 
 .filter(
+
 m=>
+
 m.tipo===t&&
 m.activo!==false
+
 )
 
 .map(m=>
@@ -1434,19 +2309,27 @@ m.activo!==false
 '<div class="catalog-item">'+
 
 '<div>'+
+
 escapeHTML(m.nombre)+
+
 '<br><small>'+
+
 money(m.precio)+
+
 '</small></div>'+
 
 '<div class="catalog-actions">'+
 
 '<button class="mini edit" onclick="editarMulta('+Number(m.id)+')">'+
+
 'Editar'+
+
 '</button>'+
 
 '<button class="mini del" onclick="eliminarMulta('+Number(m.id)+')">'+
+
 'Eliminar'+
+
 '</button>'+
 
 '</div>'+
@@ -1461,49 +2344,75 @@ money(m.precio)+
 
 }
 
+
 async function crearMulta(){
 
 if(!comprobarConexion())
 return;
 
+
 const nombre=
 $('nuevoNombre').value.trim();
 
+
 const precio=
+
 validarNumero(
+
 $('nuevoPrecio').value,
+
 0
+
 );
 
+
 if(
+
 !nombre||
 precio===null
+
 )
+
 return alert(
 'Completa nombre y precio.'
 );
 
+
 const tipoNuevo=
 $('nuevoTipo').value;
 
+
 const orden=
+
 Math.max(
+
 0,
+
 ...catalogo
+
 .filter(
-x=>x.tipo===tipoNuevo
+x=>
+x.tipo===tipoNuevo
 )
+
 .map(
-x=>Number(x.orden)||0
+x=>
+Number(x.orden)||0
 )
+
 )+1;
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('multas_catalogo')
+
 .insert({
 
-tipo:tipoNuevo,
+tipo:
+tipoNuevo,
 
 nombre,
 
@@ -1514,150 +2423,224 @@ activo:true,
 orden
 
 })
+
 .select()
+
 .single();
+
 
 if(error){
 
 alert(
+
 'No se pudo añadir: '+
 error.message
+
 );
 
 return;
 
 }
 
+
 catalogo.push(data);
+
 
 $('nuevoNombre').value='';
 
 $('nuevoPrecio').value='';
+
 
 renderCatalogo();
 
 await cargar();
 
 }
+
 
 async function editarMulta(id){
 
 if(!comprobarConexion())
 return;
 
+
 const m=
+
 catalogo.find(
-x=>x.id===id
+
+x=>
+x.id===id
+
 );
+
 
 if(!m)
 return;
 
+
 let nombre=
+
 prompt(
+
 'Nombre de la multa:',
+
 m.nombre
+
 );
+
 
 if(nombre===null)
 return;
 
+
 let precioTxt=
+
 prompt(
+
 'Precio (€):',
+
 m.precio
+
 );
+
 
 if(precioTxt===null)
 return;
 
+
 const precio=
+
 validarNumero(
+
 precioTxt,
+
 0
+
 );
 
+
 if(
+
 !nombre.trim()||
 precio===null
+
 )
+
 return alert(
 'Datos no válidos.'
 );
 
+
 const {data,error}=
+
 await supabaseClient
+
 .from('multas_catalogo')
+
 .update({
 
-nombre:nombre.trim(),
+nombre:
+nombre.trim(),
 
 precio
 
 })
+
 .eq('id',id)
+
 .select()
+
 .single();
+
 
 if(error){
 
 alert(
+
 'No se pudo modificar: '+
 error.message
+
 );
 
 return;
 
 }
 
+
 Object.assign(m,data);
+
 
 renderCatalogo();
 
 await cargar();
 
 }
+
 
 async function eliminarMulta(id){
 
 if(!comprobarConexion())
 return;
 
+
 const m=
+
 catalogo.find(
-x=>x.id===id
+
+x=>
+x.id===id
+
 );
 
+
 if(
+
 !m||
+
 !confirm(
+
 '¿Eliminar "'+
 m.nombre+
 '" del catálogo? Las multas ya registradas no se borrarán.'
+
 )
+
 )
+
 return;
 
+
 const {error}=
+
 await supabaseClient
+
 .from('multas_catalogo')
+
 .update({
+
 activo:false
+
 })
+
 .eq('id',id);
+
 
 if(error){
 
 alert(
+
 'No se pudo eliminar: '+
 error.message
+
 );
 
 return;
 
 }
 
+
 m.activo=false;
+
 
 renderCatalogo();
 
@@ -1665,15 +2648,23 @@ await cargar();
 
 }
 
+
 /* =========================
    EVENTOS E INICIO
 ========================= */
 
-$('multa').onchange=actualizar;
 
-$('cantidad').oninput=actualizar;
+$('multa').onchange=
+actualizar;
 
-$('extra').oninput=actualizar;
+
+$('cantidad').oninput=
+actualizar;
+
+
+$('extra').oninput=
+actualizar;
+
 
 cargarJugadores();
 
@@ -1681,29 +2672,46 @@ cargar();
 
 cargarDatos();
 
+
 if(supabaseClient){
 
 supabaseClient
+
 .channel('multas-cambios')
 
 .on(
+
 'postgres_changes',
+
 {
+
 event:'*',
+
 schema:'public',
+
 table:'multas'
+
 },
+
 ()=>
 cargarDatos()
+
 )
 
 .on(
+
 'postgres_changes',
+
 {
+
 event:'*',
+
 schema:'public',
+
 table:'multas_catalogo'
+
 },
+
 async()=>{
 
 await cargarCatalogo();
@@ -1711,26 +2719,39 @@ await cargarCatalogo();
 cargar();
 
 if(
+
 !$('adminPanel')
-.classList.contains('hidden')
+.classList
+.contains('hidden')
+
 )
+
 renderCatalogo();
 
 }
+
 )
 
 .on(
+
 'postgres_changes',
+
 {
+
 event:'*',
+
 schema:'public',
+
 table:'jugadores'
+
 },
+
 async()=>{
 
 await cargarJugadores();
 
 }
+
 )
 
 .subscribe();

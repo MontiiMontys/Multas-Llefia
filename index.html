@@ -1060,6 +1060,11 @@ await cargarDatos();
 
 
 
+/* =========================
+   RESUMEN CORREGIDO
+========================= */
+
+
 function render(){
 
 const total=
@@ -1070,90 +1075,128 @@ a+Number(x.importe||0),
 );
 
 
+/*
+   Mapa de jugadores de Supabase.
+   Esto permite mostrar a todos los jugadores,
+   incluso si tienen 0,00 €.
+*/
+
+const mapaJugadores={};
+
 const r={};
 
 
-const nombres=
-new Set(
-jugadores.map(
-j=>j.nombre
-)
-);
+jugadores.forEach(j=>{
 
+if(!j||!j.nombre)
+return;
 
-datos.forEach(x=>{
+mapaJugadores[j.nombre]=j;
 
-if(x.jugador)
-nombres.add(x.jugador);
+r[j.nombre]=0;
 
 });
 
 
-const listaJugadores=
-Array.from(nombres)
-.sort(
-(a,b)=>{
-
-const ja=
-jugadores.find(
-j=>j.nombre===a
-);
-
-const jb=
-jugadores.find(
-j=>j.nombre===b
-);
-
-
-const oa=
-ja?
-Number(ja.orden)||9999:
-9999;
-
-
-const ob=
-jb?
-Number(jb.orden)||9999:
-9999;
-
-
-return oa-ob||
-a.localeCompare(
-b,
-'es'
-);
-
-}
-);
-
-
-listaJugadores.forEach(
-j=>r[j]=0
-);
-
+/*
+   Añadir también jugadores que aparecen
+   en multas históricas pero que ya no estén
+   actualmente en la tabla de jugadores.
+*/
 
 datos.forEach(x=>{
 
-if(
-r[x.jugador]!==undefined
-)
+if(!x||!x.jugador)
+return;
+
+
+if(r[x.jugador]===undefined){
+
+r[x.jugador]=0;
+
+mapaJugadores[x.jugador]={
+nombre:x.jugador,
+activo:true,
+orden:99999
+};
+
+}
+
+
 r[x.jugador]+=
 Number(x.importe||0);
 
 });
 
 
+/*
+   Orden:
+   primero el orden guardado en Supabase.
+   Si no existe, se ordena alfabéticamente.
+*/
+
+const listaJugadores=
+Object.keys(r)
+.sort((a,b)=>{
+
+const ja=
+mapaJugadores[a];
+
+const jb=
+mapaJugadores[b];
+
+
+const oa=
+ja&&ja.orden!==undefined
+?
+Number(ja.orden)
+:
+99999;
+
+
+const ob=
+jb&&jb.orden!==undefined
+?
+Number(jb.orden)
+:
+99999;
+
+
+if(oa!==ob)
+return oa-ob;
+
+
+return String(a).localeCompare(
+String(b),
+'es'
+);
+
+});
+
+
+/*
+   TOTAL GENERAL
+*/
+
 $('total').textContent=
 money(total);
 
 
+/*
+   LISTADO DE TODOS LOS JUGADORES
+*/
+
 $('resumen').innerHTML=
-listaJugadores.map(j=>{
+
+listaJugadores.length
+
+?
+
+listaJugadores
+.map(j=>{
 
 const jugador=
-jugadores.find(
-x=>x.nombre===j
-);
+mapaJugadores[j];
 
 
 const baja=
@@ -1175,7 +1218,8 @@ escapeHTML(j)+
 baja
 ?
 '<span class="player-status">BAJA</span>'
-:''
+:
+''
 )+
 
 '</div>'+
@@ -1186,8 +1230,17 @@ money(r[j])+
 
 '</div>';
 
-}).join('');
+})
+.join('')
 
+:
+
+'<small>No hay jugadores registrados.</small>';
+
+
+/*
+   ÚLTIMAS MULTAS
+*/
 
 $('lista').innerHTML=
 
@@ -1219,7 +1272,8 @@ x.capitan
 ?
 ' · 👤 Puesta por: '+
 escapeHTML(x.capitan)
-:''
+:
+''
 )+
 
 '</small></div>'

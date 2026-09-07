@@ -880,7 +880,8 @@ if(error){
 console.error(error);
 
 alert(
-'No se han podido cargar las multas. Revisa la configuración de Supabase.'
+'No se han podido cargar las multas: '+
+error.message
 );
 
 return;
@@ -1017,20 +1018,16 @@ await cargarDatos();
 
 function render(){
 
-const total=
-datos.reduce(
-(a,x)=>
-a+Number(x.importe||0),
-0
-);
+/*
+   MAPA DE JUGADORES
+
+   Solo los jugadores activos se muestran
+   y sus multas cuentan en el total.
+*/
 
 const mapaJugadores={};
 
 const r={};
-
-/*
-   Añadir todos los jugadores.
-*/
 
 jugadores.forEach(j=>{
 
@@ -1039,13 +1036,17 @@ return;
 
 mapaJugadores[j.nombre]=j;
 
+if(j.activo!==false){
+
 r[j.nombre]=0;
+
+}
 
 });
 
+
 /*
-   Añadir jugadores históricos
-   que aparezcan en multas.
+   SUMAR SOLO LAS MULTAS DE JUGADORES ACTIVOS.
 */
 
 datos.forEach(x=>{
@@ -1053,26 +1054,44 @@ datos.forEach(x=>{
 if(!x||!x.jugador)
 return;
 
-if(r[x.jugador]===undefined){
+const jugador=
+mapaJugadores[x.jugador];
 
-r[x.jugador]=0;
 
-mapaJugadores[x.jugador]={
-nombre:x.jugador,
-activo:true,
-orden:99999,
-id:null
-};
+/*
+   Si el jugador existe y está activo,
+   su multa cuenta.
+*/
 
-}
+if(
+jugador &&
+jugador.activo!==false
+){
 
 r[x.jugador]+=
 Number(x.importe||0);
 
+}
+
 });
 
+
 /*
-   Ordenar jugadores.
+   TOTAL GENERAL:
+   SOLO multas de jugadores activos.
+*/
+
+const total=
+Object.values(r)
+.reduce(
+(a,v)=>
+a+Number(v||0),
+0
+);
+
+
+/*
+   Ordenar únicamente jugadores activos.
 */
 
 const listaJugadores=
@@ -1111,20 +1130,18 @@ String(b),
 }
 );
 
+
 /*
-   Total general.
+   Mostrar total.
 */
 
 $('total').textContent=
 money(total);
 
-/*
-   LISTADO DE TODOS LOS JUGADORES.
 
-   IMPORTANTE:
-   El return está en la misma línea que
-   el HTML para evitar que JavaScript
-   interprete el return como vacío.
+/*
+   Mostrar jugadores activos.
+   Los dados de baja NO aparecen.
 */
 
 $('resumen').innerHTML=
@@ -1132,16 +1149,8 @@ listaJugadores.length
 ?
 
 listaJugadores
-.map(j=>{
-
-const jugador=
-mapaJugadores[j];
-
-const baja=
-jugador&&
-jugador.activo===false;
-
-return '<div class="player">'+
+.map(j=>
+'<div class="player">'+
 
 '<div class="player-left">'+
 
@@ -1149,31 +1158,25 @@ return '<div class="player">'+
 escapeHTML(j)+
 '</span>'+
 
-(
-baja
-?
-'<span class="player-status">BAJA</span>'
-:
-''
-)+
-
 '</div>'+
 
 '<span>'+
 money(r[j])+
 '</span>'+
 
-'</div>';
-
-})
+'</div>'
+)
 .join('')
 
 :
 
-'<small>No hay jugadores registrados.</small>';
+'<small>No hay jugadores activos.</small>';
+
 
 /*
-   Últimas multas.
+   LAS ÚLTIMAS MULTAS SE MANTIENEN.
+   Aunque un jugador esté dado de baja,
+   sus registros históricos siguen visibles aquí.
 */
 
 $('lista').innerHTML=

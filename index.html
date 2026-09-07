@@ -506,6 +506,25 @@ style="margin-top:10px"
 </div>
 
 
+<!-- NUEVA SECCIÓN -->
+<div class="admin-section">
+
+<h3>🧾 Administrar multas registradas</h3>
+
+<div class="admin-note">
+
+Aquí puedes modificar o eliminar una multa individual sin afectar a las demás.
+
+</div>
+
+<div
+id="multasRegistradasAdmin"
+style="margin-top:10px"
+></div>
+
+</div>
+
+
 <button
 class="secondary"
 onclick="salirAdmin()"
@@ -1612,6 +1631,11 @@ render();
 }
 
 
+/* =========================
+   REGISTRAR MULTA
+========================= */
+
+
 async function add(){
 
 if(!comprobarConexion())
@@ -1769,13 +1793,6 @@ await cargarDatos();
 
 function render(){
 
-/*
-   MAPA DE JUGADORES
-
-   Solo los jugadores activos forman
-   parte de la aplicación.
-*/
-
 const jugadoresActivos=
 jugadores.filter(
 
@@ -1800,14 +1817,6 @@ r[j.nombre]=0;
 
 });
 
-
-/*
-   SUMAR MULTAS
-
-   IMPORTANTE:
-   Las multas de jugadores dados de baja
-   NO se suman.
-*/
 
 datos.forEach(x=>{
 
@@ -1835,10 +1844,6 @@ Number(x.importe||0);
 });
 
 
-/*
-   TOTAL GENERAL
-*/
-
 const total=
 
 Object.values(r)
@@ -1856,10 +1861,6 @@ a+Number(v||0),
 $('total').textContent=
 money(total);
 
-
-/*
-   ORDEN DE JUGADORES ACTIVOS
-*/
 
 const listaJugadores=
 
@@ -1883,13 +1884,6 @@ String(b.nombre),
 
 );
 
-
-/*
-   LISTADO DE JUGADORES ACTIVOS
-
-   Los jugadores dados de baja
-   NO aparecen aquí.
-*/
 
 $('resumen').innerHTML=
 
@@ -1929,16 +1923,6 @@ money(r[j.nombre])+
 
 '<small>No hay jugadores activos.</small>';
 
-
-/*
-   ÚLTIMAS MULTAS
-
-   Solo se muestran multas de jugadores
-   que están actualmente activos.
-
-   Si un jugador se da de baja,
-   sus multas desaparecen de aquí.
-*/
 
 const multasVisibles=
 
@@ -2137,7 +2121,7 @@ a.href
 
 
 /* =========================
-   BORRAR DATOS
+   BORRAR TODO
 ========================= */
 
 
@@ -2239,6 +2223,8 @@ renderJugadoresAdmin();
 
 renderCatalogo();
 
+renderMultasRegistradasAdmin();
+
 }else{
 
 alert(
@@ -2264,7 +2250,7 @@ $('adminPin').value='';
 
 
 /* =========================
-   CATÁLOGO DE MULTAS
+   CATÁLOGO
 ========================= */
 
 
@@ -2469,7 +2455,7 @@ const m=
 catalogo.find(
 
 x=>
-x.id===id
+Number(x.id)===Number(id)
 
 );
 
@@ -2588,7 +2574,7 @@ const m=
 catalogo.find(
 
 x=>
-x.id===id
+Number(x.id)===Number(id)
 
 );
 
@@ -2645,6 +2631,579 @@ m.activo=false;
 renderCatalogo();
 
 await cargar();
+
+}
+
+
+/* =========================
+   MULTAS REGISTRADAS
+========================= */
+
+
+function renderMultasRegistradasAdmin(){
+
+const cont=
+$('multasRegistradasAdmin');
+
+
+if(!cont)
+return;
+
+
+if(!datos.length){
+
+cont.innerHTML=
+'<small>No hay multas registradas.</small>';
+
+return;
+
+}
+
+
+cont.innerHTML=
+
+datos.map((x,index)=>{
+
+const jugadorInfo=
+
+jugadores.find(
+
+j=>
+String(j.nombre)===String(x.jugador)
+
+);
+
+
+const estadoJugador=
+
+jugadorInfo&&
+jugadorInfo.activo===false
+
+?
+
+'<br><small>⚠️ Jugador dado de baja</small>'
+
+:
+
+'';
+
+
+return (
+
+'<div class="mut">'+
+
+'<b>'+
+
+escapeHTML(x.jugador||'Jugador')+
+
+'</b> — '+
+
+money(x.importe)+
+
+'<br>'+
+
+'<small>'+
+
+escapeHTML(x.fecha||'')+
+
+' · '+
+escapeHTML(x.tipo||'')+
+
+' · '+
+escapeHTML(x.multa||'')+
+
+(
+
+x.capitan
+
+?
+
+' · 👤 '+
+escapeHTML(x.capitan)
+
+:
+
+''
+
+)+
+
+'</small>'+
+
+estadoJugador+
+
+'<div class="catalog-actions" style="margin-top:8px">'+
+
+'<button class="mini edit" onclick="editarMultaRegistrada('+Number(x.id)+')">'+
+
+'✏️ Modificar'+
+
+'</button>'+
+
+'<button class="mini del" onclick="eliminarMultaRegistrada('+Number(x.id)+')">'+
+
+'🗑️ Eliminar'+
+
+'</button>'+
+
+'</div>'+
+
+'</div>'
+
+);
+
+}).join('');
+
+}
+
+
+async function editarMultaRegistrada(id){
+
+if(!comprobarConexion())
+return;
+
+
+const x=
+
+datos.find(
+
+m=>
+Number(m.id)===Number(id)
+
+);
+
+
+if(!x){
+
+alert(
+'No se ha encontrado la multa.'
+);
+
+return;
+
+}
+
+
+/*
+   JUGADOR
+*/
+
+const jugadoresDisponibles=
+
+jugadores
+
+.filter(
+
+j=>
+j.activo!==false
+
+)
+
+.map(
+j=>
+j.nombre
+);
+
+
+if(
+
+x.jugador &&
+
+!jugadoresDisponibles.includes(x.jugador)
+
+){
+
+jugadoresDisponibles.unshift(x.jugador);
+
+}
+
+
+const listaJugadores=
+
+jugadoresDisponibles.join(', ');
+
+
+let jugador=
+
+prompt(
+
+'Jugador:\n\nJugadores disponibles:\n'+
+listaJugadores,
+
+x.jugador||''
+
+);
+
+
+if(jugador===null)
+return;
+
+
+jugador=jugador.trim();
+
+
+if(!jugador){
+
+alert(
+'El jugador no puede estar vacío.'
+);
+
+return;
+
+}
+
+
+if(!jugadoresDisponibles.includes(jugador)){
+
+alert(
+'El jugador indicado no existe o está dado de baja.'
+);
+
+return;
+
+}
+
+
+/*
+   TIPO
+*/
+
+let tipoNuevo=
+
+prompt(
+
+'Tipo de multa:\n\nEscribe exactamente "Entrenamiento" o "Partido".',
+
+x.tipo||'Entrenamiento'
+
+);
+
+
+if(tipoNuevo===null)
+return;
+
+
+tipoNuevo=tipoNuevo.trim();
+
+
+if(
+
+tipoNuevo!=='Entrenamiento'&&
+
+tipoNuevo!=='Partido'
+
+){
+
+alert(
+'El tipo debe ser Entrenamiento o Partido.'
+);
+
+return;
+
+}
+
+
+/*
+   CONCEPTO
+*/
+
+const conceptos=
+
+catalogo
+
+.filter(
+
+m=>
+m.tipo===tipoNuevo&&
+m.activo!==false
+
+)
+
+.map(
+m=>
+m.nombre
+);
+
+
+let concepto=
+
+prompt(
+
+'Concepto de la multa:\n\nConceptos disponibles:\n'+
+(conceptos.length?conceptos.join(', '):'No hay conceptos activos'),
+
+x.multa||''
+
+);
+
+
+if(concepto===null)
+return;
+
+
+concepto=concepto.trim();
+
+
+if(!concepto){
+
+alert(
+'El concepto no puede estar vacío.'
+);
+
+return;
+
+}
+
+
+/*
+   IMPORTE
+*/
+
+let importeTxt=
+
+prompt(
+
+'Importe final de la multa (€):',
+
+Number(x.importe||0).toFixed(2)
+
+);
+
+
+if(importeTxt===null)
+return;
+
+
+/*
+   Permitir coma decimal
+*/
+
+importeTxt=
+
+importeTxt
+.replace(',','.');
+
+
+const importe=
+
+validarNumero(
+
+importeTxt,
+
+0
+
+);
+
+
+if(importe===null){
+
+alert(
+'El importe no es válido.'
+);
+
+return;
+
+}
+
+
+/*
+   CAPITÁN
+*/
+
+let capitan=
+
+prompt(
+
+'Capitán que puso la multa:',
+
+x.capitan||''
+
+);
+
+
+if(capitan===null)
+return;
+
+
+capitan=capitan.trim();
+
+
+if(!capitan){
+
+alert(
+'El capitán no puede estar vacío.'
+);
+
+return;
+
+}
+
+
+/*
+   CONFIRMACIÓN
+*/
+
+const confirmacion=
+
+confirm(
+
+'¿Guardar estos cambios?\n\n'+
+
+'Jugador: '+jugador+'\n'+
+'Tipo: '+tipoNuevo+'\n'+
+'Multa: '+concepto+'\n'+
+'Importe: '+money(importe)+'\n'+
+'Capitán: '+capitan
+
+);
+
+
+if(!confirmacion)
+return;
+
+
+/*
+   ACTUALIZAR SUPABASE
+*/
+
+const {data,error}=
+
+await supabaseClient
+
+.from('multas')
+
+.update({
+
+jugador,
+tipo:tipoNuevo,
+multa:concepto,
+importe,
+capitan
+
+})
+
+.eq('id',id)
+
+.select()
+
+.single();
+
+
+if(error){
+
+console.error(error);
+
+alert(
+
+'No se pudo modificar la multa: '+
+error.message
+
+);
+
+return;
+
+}
+
+
+Object.assign(x,data);
+
+
+/*
+   Actualizar interfaz
+*/
+
+render();
+
+renderMultasRegistradasAdmin();
+
+alert(
+'Multa modificada correctamente.'
+);
+
+}
+
+
+async function eliminarMultaRegistrada(id){
+
+if(!comprobarConexion())
+return;
+
+
+const x=
+
+datos.find(
+
+m=>
+Number(m.id)===Number(id)
+
+);
+
+
+if(!x)
+return;
+
+
+const confirmacion=
+
+confirm(
+
+'⚠️ ¿Eliminar esta multa?\n\n'+
+
+'Jugador: '+(x.jugador||'')+'\n'+
+'Importe: '+money(x.importe)+'\n'+
+'Concepto: '+(x.multa||'')+'\n\n'+
+'Esta acción no se puede deshacer.'
+
+);
+
+
+if(!confirmacion)
+return;
+
+
+const {error}=
+
+await supabaseClient
+
+.from('multas')
+
+.delete()
+
+.eq('id',id);
+
+
+if(error){
+
+console.error(error);
+
+alert(
+
+'No se pudo eliminar la multa: '+
+error.message
+
+);
+
+return;
+
+}
+
+
+datos=
+
+datos.filter(
+
+m=>
+Number(m.id)!==Number(id)
+
+);
+
+
+render();
+
+renderMultasRegistradasAdmin();
+
+alert(
+'Multa eliminada correctamente.'
+);
 
 }
 
